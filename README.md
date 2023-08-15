@@ -157,7 +157,30 @@ In CmakeLists.txt add the following line in line 23; 
 
 eigen_conversions
 ### Installing the "serial" package for communicating with the extruder
+http://wjwwood.io/serial/ 
+http://wjwwood.io/serial/doc/1.1.0/index.html //code to follow for installation of library.
 
+ Do this in the src folder of the environment 
+source /opt/ros/noetic/setup.bash 
+cd src
+git clone https://github.com/wjwwood/serial 
+cd serial 
+make 
+make test # (optional) builds the example and tests, and runs the tests. 
+make doc  # (optional) builds _this_ documentation. 
+sudo make install 
+//go back to the src folder now 
+cd .. 
+//go back to the home directory of the catkin environment  
+cd .. 
+catkin_make 
+Now in the package that you are going to use the “serial” function include serial in CMakeList.txt and package.xml . You can follow the example in the following link; 
+https://github.com/garyservin/serial-example 
+To use the function follow the documentation in the following link :
+http://wjwwood.io/serial/doc/1.1.0/classserial_1_1_serial.html 
+OR
+Follow the example given in the following link; 
+https://github.com/garyservin/serial-example/blob/master/src/serial_example_node.cpp 
 ### Edit the bash file for launching the RAVEN according to the procedure for your robot
 * use the bash script templates available in the scripts folder for your reference 
 ### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
@@ -168,7 +191,6 @@ eigen_conversions
 * change the endeffector in position_publisher and sub_plotter
 
 ## Instructions from making a Gcode for RAVEN
-
 
 // set the orientation. By default, the tool will be pointing up into the air when we usually want it to  
 // be pointing down into the ground. so make the robot point down the Rx value should be Pi (3.14.......)
