@@ -165,3 +165,30 @@ eigen_conversions
 * change base_farem to the base name being used 
 * set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
 * change the endeffector in position_publisher and sub_plotter
+
+## Instructions from making a Gcode for RAVEN
+
+
+// set the orientation. By default, the tool will be pointing up into the air when we usually want it to  
+// be pointing down into the ground. so make the robot point down the Rx value should be Pi (3.14.......)
+The file shouldn't have any other lines as the first line with commnts
+
+#### example 
+#G(0/1) F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg#
+1 0.6 0.002702 0.005 0.01175421 0.0 3.141592653589793 0.3490658503988659 0.0 0
+1 0.3 0.002702 0.003 0.01175421 0.10449 3.141592653589793 0.3490658503988659 0.0 0
+1 0.3 0.002702 0.001 0.01175421 0.20898 3.141592653589793 0.3490658503988659 0.0 0
+1 0.3 0.002702 -0.001 0.01175421 0.31347 3.141592653589793 0.3490658503988659 0.0 0
+1 0.3 0.002702 -0.003 0.01175421 0.41796 3.141592653589793 0.3490658503988659 0.0 0
+1 0.3 0.002702 -0.005 0.01175421 0.52245 3.141592653589793 0.3490658503988659 0.0 0
+
+If you have a standard gcode created in Marlin flavour you can use the Gcode_converter.py file to conver to the RAVEN Gcode format
+for this paste the gcode section with the motion into the to_convert.txt file and run the Gcode_converter.py file
+
+
+## Instructions for printing 
+
+For printing the Gcode which is in the prescribed RAVEN format should be pasted in the converted_file.txt file.
+Then to print run  the RAVEN.bash to print on the real robot or RAVEN_Sim.bash to simulate the motion in gazebo.
+
+first time that you are printing it is advised to put only two points and you should have access to the emergency stop at all times during the tests
