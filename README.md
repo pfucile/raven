@@ -6,23 +6,23 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Refer to the instructions from your manufacturer.
   In case you need to create a generic ros workspace the following links would help you.
-  https://moveit.ros.org/install/source/  //the link to follow 
-  https://moveit.ros.org/install/ 
-  https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html 
+  * https://moveit.ros.org/install/source/  //the link to follow 
+  * https://moveit.ros.org/install/ 
+  * https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html 
 ### Clone the RAVEN package to the catkin workspace
   git clone https://github.com/vivekcdavid/raven.git
 
 ### Create the ikfast-plugin for your robot
   
   Follow this instructions for creating the plugin 
-  https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html#tweaking-the-creation-process
-  http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html
+  * https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html#tweaking-the-creation-process
+  * http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html
   Old method , but explains clearly
-  http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html
-  https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html
+  * http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html
+  * https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html
   
   follow this link to understand about ikfast plugins
-  http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types 
+  * http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types 
   
   
   While generating the plugin use the _transform6d_ type
