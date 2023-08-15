@@ -155,7 +155,7 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   http://wjwwood.io/serial/doc/1.1.0/index.html //code to follow for installation of library.
   
    Do this in the src folder of the environment 
-  ```
+ ```
   source /opt/ros/noetic/setup.bash 
   cd src
   git clone https://github.com/wjwwood/serial 
