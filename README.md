@@ -1,10 +1,12 @@
 # RAVEN Robotic-Bioprinting-3D-Mentor
-The repository of the codes for controlling the sawyer robot using ROS, Moveit and other related packages. The ROS workspace used to manage the robot is available here this can be cloned into your computer. Follow the procedures given in the SOP folder to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from U_r****. Instructions to edit the files according to your robot is explaind in the Raven Installation instructions section
+RAVEN is a robotic printing package aimed at accelerating robotic bioprinting technology development. The package makes it possible to convert a robot arm with six or seven degrees of freedom (6DOF or 7DOF) into a 3D printing  system. RAVEN handles the path planning for the robot and enables the simultaneous control of an extruder which is connected to the workstation via a USB connection. We are using Descartes cartesian planner for trajectory planning. We hope that this system would enable the printing of more advanced scaffold structures helping improve the tissue engineering field. 
+
+Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from U_r****. Instructions to edit the files according to your robot are explained in the Raven Installation instructions section
 
 
 ## Raven Installation instructions - Steps to follow 
 ### Create a catkin workspace according to the procedure for your robot
-  You should follow the instructions specifically for your robot. Refer to the instructions from your manufacturer.
+  You should follow the instructions specifically for your robot. Please Refer to the instructions from the manufacturer of your robot manufacturer
   In case you need to create a generic ros workspace the following links would help you.
   * https://moveit.ros.org/install/source/  //the link to follow 
   * https://moveit.ros.org/install/ 
