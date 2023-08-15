@@ -1,9 +1,8 @@
 # RAVEN Robotic-Bioprinting-3D-Mentor
-The repository of the codes for controlling the sawyer robot using ROS, Moveit and other related packages. The ROS workspace used to manage the robot is available here this can be cloned into your computer. Follow the procedures given in the SOP folder to set up all the necessary software and dependencies for getting the workspace up and running. 
+The repository of the codes for controlling the sawyer robot using ROS, Moveit and other related packages. The ROS workspace used to manage the robot is available here this can be cloned into your computer. Follow the procedures given in the SOP folder to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from U_r****. Instructions to edit the files according to your robot is explaind in the Raven Installation instructions section
 
 
-
-## Raven Installation - Steps to follow 
+## Raven Installation instructions - Steps to follow 
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Refer to the instructions from your manufacturer.
   In case you need to create a generic ros workspace the following links would help you.
