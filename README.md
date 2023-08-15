@@ -156,6 +156,7 @@ In package.xml add the following line at line 26; 
 In CmakeLists.txt add the following line in line 23; 
 
 eigen_conversions
+### Installing the "serial" package for communicating with the extruder
 
 ### Edit the bash file for launching the RAVEN according to the procedure for your robot
 * use the bash script templates available in the scripts folder for your reference 
