@@ -36,47 +36,37 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   [https://wiki.ros.org/ROS/Tutorials/BuildingPackages](https://wiki.ros.org/ROS/Tutorials/BuildingPackages) //link for using cmake  
   
   Steps 
-  
   1. Go to the workspace and source the workspace 
-      
-  
+  ```
   sudo apt  install cmake-curses-gui 
-  
   cd ~/ws_moveit/ 
-  
-  source /opt/ros/noetic/setup.bash 
-  
+  source /opt/ros/noetic/setup.bash
+  ```
   2. Clone the package into the workspace 
-      
-  
+  ```
   git clone [https://github.com/orocos/orocos_kinematics_dynamics.git](https://github.com/orocos/orocos_kinematics_dynamics.git) 
-  
-  3. Go into the folder named orocos_kdl 
-      
-  
+  ```
+  3. Go into the folder named orocos_kdl
+  ```
   cd orocos_kinematics_dynamics/orocos_kdl 
-  
-  4. Make a directory named build inside this folder and go into the folder 
-      
-  
+  ```
+  5. Make a directory named build inside this folder and go into the folder 
+   ```   
   mkdir build 
-  
   cd build 
-  
+  ```
   5. Build this package using the cmake 
-      
-  
+  ```
   ccmake .. 
-  
+  ```
   In the window that open up, press c for configuring then go down to the CMAKE_INSTALL_PREFIX option and then press enter then replace the path with “/opt/ros/noetic”. Then press enter to confirm. Then press c to configure. Then press g to generate the files. 
   
   Then run the following commands in the terminal 
-  
+  ```
   make 
-  
   make check 
-  
-  sudo make install 
+  sudo make install
+  ```
   
   Installing Descartes from source; 
   
@@ -86,7 +76,7 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   
   6. Clone the Descartes repository into the src folder of the workspace; 
       
-  
+  ```
   cd ~/ws_moveit 
   
   catkin_make 
@@ -103,7 +93,8 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   
    catkin_make 
   
-   source devel/setup.bash 
+   source devel/setup.bash
+   ```
   
   //wile building with the sawyer_ros/moveit/simulator setup some errors were returned, so the error causing package dependencies such as the joystick was removed from the respective package.xml file and then this command ran without error, the effects of this action is unknown!! 
   
@@ -111,11 +102,11 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   
   7. Configure the build workspace 
       
-  
+  ```
   catkin config --extend /opt/ros/noetic --cmake-args -DCMAKE_BUILD_TYPE=Release 
   
   catkin_make 
-  
+  ```
   // if you get the following error “ catkin: command not found” run the following comment 
   
   sudo apt-get install python3-catkin-tools 
@@ -164,6 +155,7 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   http://wjwwood.io/serial/doc/1.1.0/index.html //code to follow for installation of library.
   
    Do this in the src folder of the environment 
+  ```
   source /opt/ros/noetic/setup.bash 
   cd src
   git clone https://github.com/wjwwood/serial 
@@ -177,6 +169,7 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   //go back to the home directory of the catkin environment  
   cd .. 
   catkin_make 
+  ```
   Now in the package that you are going to use the “serial” function include serial in CMakeList.txt and package.xml . You can follow the example in the following link; 
   https://github.com/garyservin/serial-example 
   To use the function follow the documentation in the following link :
@@ -201,13 +194,13 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
 
 #### example 
 ```
-  #G(0/1) F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg# <br>
-  1 0.6 0.002702 0.005 0.01175421 0.0 3.141592653589793 0.3490658503988659 0.0 0 <br>
-  1 0.3 0.002702 0.003 0.01175421 0.10449 3.141592653589793 0.3490658503988659 0.0 0 <br>
-  1 0.3 0.002702 0.001 0.01175421 0.20898 3.141592653589793 0.3490658503988659 0.0 0 <br>
-  1 0.3 0.002702 -0.001 0.01175421 0.31347 3.141592653589793 0.3490658503988659 0.0 0 <br>
-  1 0.3 0.002702 -0.003 0.01175421 0.41796 3.141592653589793 0.3490658503988659 0.0 0 <br>
-  1 0.3 0.002702 -0.005 0.01175421 0.52245 3.141592653589793 0.3490658503988659 0.0 0 <br>
+  #G(0/1) F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg# 
+  1 0.6 0.002702 0.005 0.01175421 0.0 3.141592653589793 0.3490658503988659 0.0 0 
+  1 0.3 0.002702 0.003 0.01175421 0.10449 3.141592653589793 0.3490658503988659 0.0 0 
+  1 0.3 0.002702 0.001 0.01175421 0.20898 3.141592653589793 0.3490658503988659 0.0 0 
+  1 0.3 0.002702 -0.001 0.01175421 0.31347 3.141592653589793 0.3490658503988659 0.0 0 
+  1 0.3 0.002702 -0.003 0.01175421 0.41796 3.141592653589793 0.3490658503988659 0.0 0 
+  1 0.3 0.002702 -0.005 0.01175421 0.52245 3.141592653589793 0.3490658503988659 0.0 0 
 ```
 
   
