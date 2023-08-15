@@ -15,7 +15,12 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   ```
 
 ### Create the ikfast-plugin for your robot
+   To generate IKFast plugin 
   
+  [https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html#tweaking-the-creation-process](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html#tweaking-the-creation-process) 
+  
+  Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
+  To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from “kdl_kinematics_plugin/KDLKinematicsPlugin” to “sawyer_right_arm/IKFastKinematicsPlugin” 
   Follow this instructions for creating the plugin 
   * https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html#tweaking-the-creation-process
   * http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html
@@ -125,33 +130,11 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   Then run the commands in the step 2 again 
   
   9. Source the workspace 
-      
+  ```
+source devel/setup.bash
+```
   
-  source devel/setup.bash 
-  
-  To use the Descartes capability with Moveit follow the instructions given in the following link 
-  
-  [https://github.com/PickNikRobotics/descartes_capability](https://github.com/PickNikRobotics/descartes_capability) 
-  
-  To generate IKFast plugin 
-  
-  [https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html#tweaking-the-creation-process](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html#tweaking-the-creation-process) 
-  
-  Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
-  
-  To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from “kdl_kinematics_plugin/KDLKinematicsPlugin” to “sawyer_right_arm/IKFastKinematicsPlugin” 
-  
-  Now if we use moveit cartesian planning it should automatically use the Descartes planning capability. 
-  
-  If the planning is not working in edit the CmakeLists.txt and package.xml files in the ws_moveit/src/descartes_capability folder and include “eigen_conversions” in the depends on list 
-  
-  In package.xml add the following line at line 26; 
-  
-  <depend>eigen_conversions</depend> 
-  
-  In CmakeLists.txt add the following line in line 23; 
-  
-  eigen_conversions
+
 ### Installing the "serial" package for communicating with the extruder
   http://wjwwood.io/serial/ 
   http://wjwwood.io/serial/doc/1.1.0/index.html //code to follow for installation of library.
