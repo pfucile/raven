@@ -143,19 +143,25 @@ To generate IKFast plugin 
 
 Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
 
-To use descartes we need to edit the kinematics.yaml file and change the kinematics solver from “kdl_kinematics_plugin/KDLKinematicsPlugin” to “sawyer_right_arm/IKFastKinematicsPlugin” 
+To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from “kdl_kinematics_plugin/KDLKinematicsPlugin” to “sawyer_right_arm/IKFastKinematicsPlugin” 
 
-Now if we use moveit cartesian planning it should automatically use the descartes planning capability. 
+Now if we use moveit cartesian planning it should automatically use the Descartes planning capability. 
 
-If the planning is not working in edit the CmakeLists.txt and package.xml files in the ws_moveit/src/descartes_capability folder and include “eigen_conversions” in the depends list 
+If the planning is not working in edit the CmakeLists.txt and package.xml files in the ws_moveit/src/descartes_capability folder and include “eigen_conversions” in the depends on list 
 
 In package.xml add the following line at line 26; 
 
 <depend>eigen_conversions</depend> 
 
-In CmakeLists.txt add the following line in the line 23; 
+In CmakeLists.txt add the following line in line 23; 
 
 eigen_conversions
-* edit the bash file for launching the RAVEN according to the procedure for your robot
-* 
-* edit the Group names and other particulars in the raven file(pkg_for_descartes_code.cpp) according to the robots specifications
+
+### Edit the bash file for launching the RAVEN according to the procedure for your robot
+* use the bash script templates available in the scripts folder for your reference 
+### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
+* change the PLANNING_GROUP to the group name used in moveit
+* change tcp_frame to the eff name being used
+* change base_farem to the base name being used 
+* set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
+* change the endeffector in position_publisher and sub_plotter
