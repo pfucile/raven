@@ -118,17 +118,6 @@ The repository of the codes for controlling the sawyer robot using ROS, Moveit a
   
   sudo apt-get install python3-catkin-tools 
   
-  8. If an error related to “moveit_resources” appear; 
-      
-  
-  [https://github.com/PickNikRobotics/descartes_capability/issues/9](https://github.com/PickNikRobotics/descartes_capability/issues/9) //About the error   
-  
-  [https://github.com/fzoric8/descartes_capability/commit/b7ac700fa073d1210e44da3308413dbb9e4dc65b](https://github.com/fzoric8/descartes_capability/commit/b7ac700fa073d1210e44da3308413dbb9e4dc65b)  
-  
-  Open the file CMakeLists.txt file in the folder ws_moveit/src/descartes_capability and comment out the lines containing moveit_resources (lines 136 and 137) with “#”. 
-  
-  Then run the commands in the step 2 again 
-  
   9. Source the workspace 
   ```
 source devel/setup.bash
