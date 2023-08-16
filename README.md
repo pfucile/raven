@@ -67,11 +67,11 @@ Go to the workspace and source the workspace 
   catkin_make 
   source /opt/ros/noetic/setup.bash 
   cd ~/ws_moveit/src 
-   git clone https://github.com/ros-industrial-consortium/descartes.git 
-   cd ~/ws_moveit/src  
+  git clone https://github.com/ros-industrial-consortium/descartes.git 
+  cd ~/ws_moveit/src  
   rosdep install -r -y --from-paths src --ignore-src 
-   catkin_make 
-   source devel/setup.bash
+  catkin_make 
+  source devel/setup.bash
    ```
 Configure the build workspace 
       
@@ -84,23 +84,19 @@ Source the workspace 
 source devel/setup.bash
 ```
 ### Installing the "serial" package for communicating with the extruder
-  http://wjwwood.io/serial/ 
-  http://wjwwood.io/serial/doc/1.1.0/index.html //code to follow for installation of library.
+  This [package](http://wjwwood.io/serial/ ) is used for communication with the extruders' controller board. The instructions given below are based on the instructions from the [website](http://wjwwood.io/serial/doc/1.1.0/index.html).https://github.com/wjwwood/serial
   
-   Do this in the src folder of the environment 
+Do this in the src folder of the environment 
  ```
   source /opt/ros/noetic/setup.bash 
-  cd src
-  git clone https://github.com/wjwwood/serial 
+  cd ~/ws_moveit/src
+  git clone https://github.com/wjwwood/serial.git
   cd serial 
   make 
-  make test # (optional) builds the example and tests, and runs the tests. 
-  make doc  # (optional) builds _this_ documentation. 
-  sudo make install 
-  //go back to the src folder now 
-  cd .. 
-  //go back to the home directory of the catkin environment  
-  cd .. 
+  make test 
+  make doc  
+  sudo make install
+  cd ~/ws_moveit/
   catkin_make 
   ```
   Now in the package that you are going to use the “serial” function include serial in CMakeList.txt and package.xml . You can follow the example in the following link; 
