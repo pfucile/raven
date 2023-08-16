@@ -118,7 +118,7 @@ install wmctrl and xdotool:
      ```
 Create a file named target_term in the /bin folder and copy paste the following code into it; 
  ```
-	#!/usr/bin/env python3 
+#!/usr/bin/env python3 
 import subprocess 
 import os 
 import sys 
