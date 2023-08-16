@@ -29,14 +29,7 @@ to
   
 ### Now we need to setup Descartes in the workspace
   Before installing the Descartes package some dependencies need to be installed. 
-  
-  Installing Orocos Kinematics and Dynamics package 
-  
-  [https://www.orocos.org/wiki/Installation_Manual.html](https://www.orocos.org/wiki/Installation_Manual.html) //link to follow for installation of package 
-  
-  [https://wiki.ros.org/ROS/Tutorials/BuildingPackages]([ROS](https://wiki.ros.org/ROS/Tutorials/BuildingPackages)) //link for using cmake  
-  
-  Steps 
+  * Installing Orocos Kinematics and Dynamics [package](https://www.orocos.org/wiki/Installation_Manual.html).
   1. Go to the workspace and source the workspace 
   ```
   sudo apt  install cmake-curses-gui 
@@ -61,20 +54,13 @@ to
   ccmake .. 
   ```
   In the window that open up, press c for configuring then go down to the CMAKE_INSTALL_PREFIX option and then press enter then replace the path with “/opt/ros/noetic”. Then press enter to confirm. Then press c to configure. Then press g to generate the files. 
-  
   Then run the following commands in the terminal 
   ```
   make 
   make check 
   sudo make install
   ```
-  
-  Installing Descartes from source; 
-  
-  [http://wiki.ros.org/descartes/Tutorials/Getting%20Started%20with%20Descartes](http://wiki.ros.org/descartes/Tutorials/Getting%20Started%20with%20Descartes) //source to follow 
-  
-  Steps 
-  
+  * Installing [Descartes](http://wiki.ros.org/descartes/Tutorials/Getting%20Started%20with%20Descartes) from source; 
   6. Clone the Descartes repository into the src folder of the workspace; 
       
   ```
