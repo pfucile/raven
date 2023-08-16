@@ -53,7 +53,8 @@ Go to the workspace and source the workspace 
   make check 
   sudo make install
   ```
-  * Installing [Descartes](http://wiki.ros.org/descartes/Tutorials/Getting%20Started%20with%20Descartes) from source; 
+  * Installing [Descartes](http://wiki.ros.org/descartes/Tutorials/Getting%20Started%20with%20Descartes) from source;
+  * 
   Clone the Descartes repository into the src folder of the workspace; 
   ```
   cd ~/ws_moveit 
