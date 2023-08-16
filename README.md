@@ -1,7 +1,7 @@
 # RAVEN Robotic Bioprinting 3D Mentor
 RAVEN is a robotic printing package aimed at accelerating robotic bioprinting technology development. The package makes it possible to convert a robot arm with six or seven degrees of freedom (6DOF or 7DOF) into a 3D printing  system. RAVEN handles the path planning for the robot and enables the simultaneous control of an extruder which is connected to the workstation via a USB connection. We are using Descartes Cartesian planner for trajectory planning. To improve the performance of the Descartes planner we are using IKFast Kinematic plugin for the Inverse kinematics this will have to be generated for your robot as explained in the instructions below. The package is capable of simulating the motion of the robot in Gazebo if needed, thus is useful while working with complicated trajectories for the first time. We hope that this system would enable the printing of more advanced scaffold structures helping improve the tissue engineering field. 
 
-Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the Raven Installation instructions section
+Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the Raven Installation instructions section.
 ## Disclaimer
 ___This code has only been tested for a few robotic systems. The code is currently in an experimental state, feel free to use this code for your projects and to contribute back to this project. But exercise caution while running the codes on real robots especially while testing the system on your robot for the first time.___ 
 ## System requirements
@@ -20,7 +20,7 @@ To generate IKFast plugin, follow the instructions in the following tutorial fro
 
 While generating the plugin use the [transform6d ](http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types) type
 Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
-To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from ```“kdl_kinematics_plugin/KDLKinematicsPlugin”``` to ```“<myrobot_name>_<planning_group_name>_kinematics/IKFastKinematicsPlugin”  ```
+To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from ```“kdl_kinematics_plugin/KDLKinematicsPlugin”``` to ```“<myrobot_name>_<planning_group_name>_kinematics/IKFastKinematicsPlugin”```.
   
 ### Now we need to setup Descartes in the workspace
   Before installing the Descartes package some dependencies need to be installed. 
