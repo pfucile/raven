@@ -16,7 +16,7 @@ Follow the procedures given in the instructions below, to set up all the necessa
   ```
 
 ### Create the ikfast-plugin for your robot
-   To generate IKFast plugin, follow the instructions in the following tutorial form moveit ["IKFast Tutorial"](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html). This method relies on a docker container for[Openrave ](http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types) which makes it staraightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for[Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
+   To generate IKFast plugin, follow the instructions in the following tutorial form moveit ["IKFast Tutorial"](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html). This method relies on a docker container for[Openrave ](http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types) which makes it staraightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
 
 ```
 While generating the plugin use the _transform6d_ type
