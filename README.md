@@ -98,13 +98,6 @@ source devel/setup.bash
   cd ~/ws_moveit/
   catkin_make 
   ```
-  Now in the package that you are going to use the “serial” function include serial in CMakeList.txt and package.xml . You can follow the example in the following link; 
-  https://github.com/garyservin/serial-example 
-  To use the function follow the documentation in the following link :
-  http://wjwwood.io/serial/doc/1.1.0/classserial_1_1_serial.html 
-  OR
-  Follow the example given in the following link; 
-  https://github.com/garyservin/serial-example/blob/master/src/serial_example_node.cpp 
 ### Creating and running bash script for launching the RAVEN
 Depending on the robot there will be changes in the exact code which has to be executed for running the printing system. But the sequence of steps that should be taken is as follows;
 * The robot(simulated/real) should be connected with the workstation
@@ -115,6 +108,62 @@ Depending on the robot there will be changes in the exact code which has to be e
 * Then the RAVEN can be laucnhed by running ```roslaunch raven raven_launch_file.launch```
 
 Use the bash script templates available in the scripts folder for your reference.
+To run this script we need to set up another script that handles running commands along different terminals. To run the simulation or a script for the real robot, multiple commands have to be executed on multiple terminals in Ubuntu. This Bash script helps us to automate this process. This file uses a script to automatically send our commands to the designated terminal window. Further details can be found in the Prerequisite section. 
+
+In order for this script to work please follow the instructions given below. More details can be found in [this links](https://askubuntu.com/questions/641683/how-can-i-send-commands-to-specific-terminal-windows) 
+
+install wmctrl and xdotool: 
+     ```
+    sudo apt-get install wmctrl xdotool 
+     ```
+Create a file named target_term in the /bin folder and copy paste the following code into it; 
+ ```
+	#!/usr/bin/env python3 
+import subprocess 
+import os 
+import sys 
+import time 
+#--- set your terminal below 
+application = "gnome-terminal" 
+#--- 
+option = sys.argv[1] 
+data = os.environ["HOME"]+"/.term_list" 
+def current_windows(): 
+    w_list = subprocess.check_output(["wmctrl", "-lp"]).decode("utf-8") 
+    w_lines = [l for l in w_list.splitlines()] 
+    try: 
+        pid = subprocess.check_output(["pgrep", application]).decode("utf-8").strip() 
+        return [l for l in w_lines if str(pid) in l] 
+    except subprocess.CalledProcessError: 
+        return [] 
+def arr_windows(n): 
+    w_count1 = current_windows() 
+    for requested in range(n): 
+        subprocess.Popen([application]) 
+    called = [] 
+    while len(called) < n: 
+        time.sleep(1) 
+        w_count2 = current_windows() 
+        add = [w for w in w_count2 if not w in w_count1] 
+        [called.append(w.split()[0]) for w in add if not w in called] 
+        w_count1 = w_count2 
+    return called 
+def run_intterm(w, command): 
+    subprocess.call(["xdotool", "windowfocus", "--sync", w]) 
+    subprocess.call(["xdotool", "type", command+"\n"]) 
+if option == "-set": 
+    open(data, "w").write("") 
+    n = int(sys.argv[2]) 
+    new = arr_windows(n) 
+    for w in new: 
+        open(data, "a").write(w+"\n") 
+elif option == "-run": 
+    t_term = open(data).read().splitlines()[int(sys.argv[2])-1] 
+    command = (" ").join(sys.argv[3:]) 
+    run_intterm(t_term, command) 
+ ```
+Make the file executable using chmod +x and restart the computer 
+
 ### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
   * change the PLANNING_GROUP to the group name used in moveit
   * change tcp_frame to the name if the end-effector of the robot
