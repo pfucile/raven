@@ -1,7 +1,3 @@
-//
-// Created by sawyer on 16-1-23.
-//
-
 // CLASSES
 
 #include <ros/ros.h>
