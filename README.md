@@ -110,12 +110,10 @@ Do this in the src folder of the environment
 Depending on the robot there will be changes in the exact code which has to be executed for running the printing system. But the sequence of steps that should be taken is as follows;
 * The robot(simulated/real) should be connected with the workstation
 * Then Movit should be launched and it should be able to control the robot
-* Then it should be ensured that the joint_states should be avilable from
-   ```
-  robot/joint_states
-   ```
-  This can be done by running ```rostopic list``` to see all the avilable topis and you can use ```rostopic echo <topic_name>```
-* if needed some ros topics will have to be relyed.  
+* Then it should be ensured that the joint_states should be avilable from ```robot/joint_states```. This can be done by running ```rostopic list``` to see all the available topics and you can use ```rostopic echo <topic_name>``` to see what is being published in a topic. If needed some ros topics will have to be relayed.
+* The ```ikfast_base_frame``` and ```ikfast_tool_frame``` should be set in rosparam server.
+* Then the data logging function of RAVEN can be started by running ```rosrun raven Position_publisher.py```  and ```rosrun raven Data_logger.py```.
+* Then the RAVEN can be laucnhed by running ```roslaunch raven raven_launch_file.launch```
 * use the bash script templates available in the scripts folder for your reference 
 ### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
   * change the PLANNING_GROUP to the group name used in moveit
