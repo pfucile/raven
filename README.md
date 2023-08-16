@@ -176,8 +176,9 @@ Make the file executable using chmod +x and restart the computer
 
 * Each line in the Gcode file represents a point in the trajectory.
 * Each line should have the following values -
-      G - either 0 or 1 representing movements without and with extrusion
-      F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg# 
+      * G - Either 0 or 1 representing movements without and with extrusion
+      * F - gives the speed of the motion to this point in m/min
+      * X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg# 
 *  seg# or segment number isBy default in Moveit/Descartes the tool will be pointing up into the air.  But we want it to  
 be pointing down into the ground, to make the robot point down the Rx value should be Pi (3.141592).
 * The file shouldn't have any other lines as the first line with comments.
