@@ -1,12 +1,12 @@
 # RAVEN Robotic Bioprinting 3D Mentor
 RAVEN is a robotic printing package aimed at accelerating robotic bioprinting technology development. The package makes it possible to convert a robot arm with six or seven degrees of freedom (6DOF or 7DOF) into a 3D printing  system. RAVEN handles the path planning for the robot and enables the simultaneous control of an extruder which is connected to the workstation via a USB connection. We are using Descartes Cartesian planner for trajectory planning. To improve the performance of the Descartes planner we are using IKFast Kinematic plugin for the Inverse kinematics this will have to be generated for your robot as explained in the instructions below. The package is capable of simulating the motion of the robot in Gazebo if needed, which is useful while working with complicated trajectories for the first time. 
 
-The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the Raven Installation instructions section. Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. We hope that this system would enable the printing of more advanced scaffold structures helping improve the tissue engineering field. 
+The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the RAVEN Installation instructions section. Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. We hope that this system would enable the printing of more advanced scaffold structures helping improve the tissue engineering field. 
 ## Disclaimer
 ___This code has only been tested for a few robotic systems. The code is currently in an experimental state, feel free to use this code for your projects and to contribute back to this project. But exercise caution while running the codes on real robots especially while testing the system on your robot for the first time.___ 
 ## System requirements
 The hardware of the workstation should be capable enough to run gazebo simulations and handle communications with the robot. This package works with ROS Noetic running on Ubuntu 20.04. For the RAVEN system to work properly the extruder should be attached to the robot such that it is collinear with the Z-axis of the end-effector of the robot. The extruder should be controlled by a standard FDM printer control board which in-turn is connected to the workstation via a USB connection. For communications with the extruder via USB the USER should be added to the dialout group by running ```sudo usermod -aG dialout yourusername```.
-## Raven Installation instructions - Steps to follow 
+## RAVEN Installation instructions - Steps to follow 
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Please Refer to the instructions from the manufacturer of your robot manufacturer
   In case you need to create a generic ros workspace follow the tutorials from [ROS](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html ) and [Moveit](https://moveit.ros.org/install/ ). All the following instructions assume that the workspace is created in the home folder of the OS and it is named "ws_moveit".
@@ -165,7 +165,7 @@ elif option == "-run":
  ```
 Make the file executable using chmod +x and restart the computer 
 
-### Edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
+### Editing RAVEN file(src/raven_code.cpp) according to the specifications of the robot
   * Edit the " path_to_file" according to your folder structure
   * Change the PLANNING_GROUP to the group name used in moveit
   * Set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
