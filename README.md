@@ -120,49 +120,55 @@ install wmctrl and xdotool:
      ```
 Create a file named target_term in the /bin folder and copy paste the following code into it; 
  ```
-#!/usr/bin/env python3 
-import subprocess 
-import os 
-import sys 
-import time 
-#--- set your terminal below 
-application = "gnome-terminal" 
-#--- 
-option = sys.argv[1] 
-data = os.environ["HOME"]+"/.term_list" 
-def current_windows(): 
-    w_list = subprocess.check_output(["wmctrl", "-lp"]).decode("utf-8") 
-    w_lines = [l for l in w_list.splitlines()] 
-    try: 
-        pid = subprocess.check_output(["pgrep", application]).decode("utf-8").strip() 
-        return [l for l in w_lines if str(pid) in l] 
-    except subprocess.CalledProcessError: 
-        return [] 
-def arr_windows(n): 
-    w_count1 = current_windows() 
-    for requested in range(n): 
-        subprocess.Popen([application]) 
-    called = [] 
-    while len(called) < n: 
-        time.sleep(1) 
-        w_count2 = current_windows() 
-        add = [w for w in w_count2 if not w in w_count1] 
-        [called.append(w.split()[0]) for w in add if not w in called] 
-        w_count1 = w_count2 
-    return called 
-def run_intterm(w, command): 
-    subprocess.call(["xdotool", "windowfocus", "--sync", w]) 
-    subprocess.call(["xdotool", "type", command+"\n"]) 
-if option == "-set": 
-    open(data, "w").write("") 
-    n = int(sys.argv[2]) 
-    new = arr_windows(n) 
-    for w in new: 
-        open(data, "a").write(w+"\n") 
-elif option == "-run": 
-    t_term = open(data).read().splitlines()[int(sys.argv[2])-1] 
-    command = (" ").join(sys.argv[3:]) 
-    run_intterm(t_term, command) 
+#!/usr/bin/env python3
+import subprocess
+import os
+import sys
+import time
+#--- set your terminal below
+application = "gnome-terminal"
+#---
+
+option = sys.argv[1]
+data = os.environ["HOME"]+"/.term_list"
+
+def current_windows():
+    w_list = subprocess.check_output(["wmctrl", "-lp"]).decode("utf-8")
+    w_lines = [l for l in w_list.splitlines()]
+    try:
+        pid = subprocess.check_output(["pgrep", application]).decode("utf-8").strip()
+        return [l for l in w_lines if str(pid) in l]
+    except subprocess.CalledProcessError:
+        return []
+
+def arr_windows(n):
+    w_count1 = current_windows()
+    for requested in range(n):
+        subprocess.Popen([application])
+    called = []
+    while len(called) < n:
+        time.sleep(1)
+        w_count2 = current_windows()
+        add = [w for w in w_count2 if not w in w_count1]
+        [called.append(w.split()[0]) for w in add if not w in called]
+        w_count1 = w_count2
+
+    return called
+
+def run_intterm(w, command):
+    subprocess.call(["xdotool", "windowfocus", "--sync", w])
+    subprocess.call(["xdotool", "type", command+"\n"]) 
+
+if option == "-set":
+    open(data, "w").write("")
+    n = int(sys.argv[2])
+    new = arr_windows(n)
+    for w in new:
+        open(data, "a").write(w+"\n")
+elif option == "-run":
+    t_term = open(data).read().splitlines()[int(sys.argv[2])-1]
+    command = (" ").join(sys.argv[3:])
+    run_intterm(t_term, command)
  ```
 Make the file executable using chmod +x and restart the computer 
 
