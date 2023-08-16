@@ -103,9 +103,7 @@ Depending on the robot there will be changes in the exact code which has to be e
 * Then the RAVEN can be laucnhed by running ```roslaunch raven raven_launch_file.launch```
 
 Use the bash script templates available in the scripts folder for your reference.
-To run this script we need to set up another script that handles running commands along different terminals. To run the simulation or a script for the real robot, multiple commands have to be executed on multiple terminals in Ubuntu. This Bash script helps us to automate this process. This file uses a script to automatically send our commands to the designated terminal window. Further details can be found in the Prerequisite section. 
-
-In order for this script to work please follow the instructions given below. More details can be found in [this links](https://askubuntu.com/questions/641683/how-can-i-send-commands-to-specific-terminal-windows) 
+To run this bash script we need to set up another script that handles running commands along different terminals. To run the simulation or a script for the real robot, multiple commands have to be executed on multiple terminals in Ubuntu. This Bash script helps us to automate this process. This file uses a script to automatically send our commands to the designated terminal window. More details can be found in [this links](https://askubuntu.com/questions/641683/how-can-i-send-commands-to-specific-terminal-windows). In order for this script to work please follow the instructions given below. 
 
 install wmctrl and xdotool: 
      ```
