@@ -114,6 +114,7 @@ Depending on the robot there will be changes in the exact code which has to be e
 * The ```ikfast_base_frame``` and ```ikfast_tool_frame``` should be set in rosparam server.
 * Then the data logging function of RAVEN can be started by running ```rosrun raven Position_publisher.py```  and ```rosrun raven Data_logger.py```.
 * Then the RAVEN can be laucnhed by running ```roslaunch raven raven_launch_file.launch```
+
 Use the bash script templates available in the scripts folder for your reference.
 ### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
   * change the PLANNING_GROUP to the group name used in moveit
