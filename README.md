@@ -178,7 +178,7 @@ Make the file executable using chmod +x and restart the computer
   The file shouldn't have any other lines as the first line with comments
 
 #### example 
-```
+  ```
   #G(0/1) F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg# 
   1 0.6 0.002702 0.005 0.01175421 0.0 3.141592653589793 0.3490658503988659 0.0 0 
   1 0.3 0.002702 0.003 0.01175421 0.10449 3.141592653589793 0.3490658503988659 0.0 0 
@@ -186,12 +186,12 @@ Make the file executable using chmod +x and restart the computer
   1 0.3 0.002702 -0.001 0.01175421 0.31347 3.141592653589793 0.3490658503988659 0.0 0 
   1 0.3 0.002702 -0.003 0.01175421 0.41796 3.141592653589793 0.3490658503988659 0.0 0 
   1 0.3 0.002702 -0.005 0.01175421 0.52245 3.141592653589793 0.3490658503988659 0.0 0 
-```
+  ```
 
   
   If you have a standard Gcode created in Marlin flavour you can use the Gcode_converter.py file to convert to the RAVEN Gcode format
   for this paste the Gcode section with the motion into the to_convert.txt file and run the Gcode_converter.py file
-
+  
 
 ## Instructions for printing 
 
@@ -202,3 +202,4 @@ Make the file executable using chmod +x and restart the computer
   To plot graphs you can use ```rosrun raven plotter.py```.
 
 ## Instructions for using an optimizer for optimizing your Gcode
+  For printing the Gcode which is in the prescribed RAVEN format should be pasted in the converted_file.txt file.
