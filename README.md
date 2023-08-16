@@ -30,26 +30,26 @@ to
 ### Now we need to setup Descartes in the workspace
   Before installing the Descartes package some dependencies need to be installed. 
   * Installing Orocos Kinematics and Dynamics [package](https://www.orocos.org/wiki/Installation_Manual.html).
-  1. Go to the workspace and source the workspace 
+Go to the workspace and source the workspace 
   ```
   sudo apt  install cmake-curses-gui 
   cd ~/ws_moveit/ 
   source /opt/ros/noetic/setup.bash
   ```
-  2. Clone the package into the workspace 
+  Clone the package into the workspace 
   ```
   git clone [https://github.com/orocos/orocos_kinematics_dynamics.git](https://github.com/orocos/orocos_kinematics_dynamics.git) 
   ```
-  3. Go into the folder named orocos_kdl
+  Go into the folder named orocos_kdl
   ```
   cd orocos_kinematics_dynamics/orocos_kdl 
   ```
-  5. Make a directory named build inside this folder and go into the folder 
+  Make a directory named build inside this folder and go into the folder 
    ```   
   mkdir build 
   cd build 
   ```
-  5. Build this package using the cmake 
+  Build this package using the cmake 
   ```
   ccmake .. 
   ```
@@ -61,49 +61,28 @@ to
   sudo make install
   ```
   * Installing [Descartes](http://wiki.ros.org/descartes/Tutorials/Getting%20Started%20with%20Descartes) from source; 
-  6. Clone the Descartes repository into the src folder of the workspace; 
-      
+  Clone the Descartes repository into the src folder of the workspace; 
   ```
   cd ~/ws_moveit 
-  
   catkin_make 
-  
   source /opt/ros/noetic/setup.bash 
-  
   cd ~/ws_moveit/src 
-  
    git clone https://github.com/ros-industrial-consortium/descartes.git 
-  
    cd ~/ws_moveit/src  
-  
   rosdep install -r -y --from-paths src --ignore-src 
-  
    catkin_make 
-  
    source devel/setup.bash
    ```
-  
-  //wile building with the sawyer_ros/moveit/simulator setup some errors were returned, so the error causing package dependencies such as the joystick was removed from the respective package.xml file and then this command ran without error, the effects of this action is unknown!! 
-  
-  ******* to be tested check the dependencies of xarm and see if it could solve the error for the joystick and all 
-  
-  7. Configure the build workspace 
+Configure the build workspace 
       
   ```
   catkin config --extend /opt/ros/noetic --cmake-args -DCMAKE_BUILD_TYPE=Release 
-  
   catkin_make 
   ```
-  // if you get the following error “ catkin: command not found” run the following comment 
-  
-  sudo apt-get install python3-catkin-tools 
-  
-  9. Source the workspace 
+Source the workspace 
   ```
 source devel/setup.bash
 ```
-  
-
 ### Installing the "serial" package for communicating with the extruder
   http://wjwwood.io/serial/ 
   http://wjwwood.io/serial/doc/1.1.0/index.html //code to follow for installation of library.
