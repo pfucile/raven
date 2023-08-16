@@ -2,8 +2,8 @@
 RAVEN is a robotic printing package aimed at accelerating robotic bioprinting technology development. The package makes it possible to convert a robot arm with six or seven degrees of freedom (6DOF or 7DOF) into a 3D printing  system. RAVEN handles the path planning for the robot and enables the simultaneous control of an extruder which is connected to the workstation via a USB connection. We are using Descartes Cartesian planner for trajectory planning. To improve the performance of the Descartes planner we are using IKFast Kinematic plugin for the Inverse kinematics this will have to be generated for your robot as explained in the instructions below.  We hope that this system would enable the printing of more advanced scaffold structures helping improve the tissue engineering field. 
 
 Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the Raven Installation instructions section
-
-
+## System requirements
+The hardware of the workstation should be capable enough to run gazebo simulations and handle communications with the robot. This package workes with ROS Noetic running on Ubuntu 20.04. For communications with the extruder via USB the USER should be added to the dialout group.  
 ## Raven Installation instructions - Steps to follow 
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Please Refer to the instructions from the manufacturer of your robot manufacturer
