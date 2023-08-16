@@ -35,7 +35,7 @@ While generating the plugin use the _transform6d_ type
   
   [https://www.orocos.org/wiki/Installation_Manual.html](https://www.orocos.org/wiki/Installation_Manual.html) //link to follow for installation of package 
   
-  [https://wiki.ros.org/ROS/Tutorials/BuildingPackages](https://wiki.ros.org/ROS/Tutorials/BuildingPackages) //link for using cmake  
+  [https://wiki.ros.org/ROS/Tutorials/BuildingPackages](ROS) //link for using cmake  
   
   Steps 
   1. Go to the workspace and source the workspace 
