@@ -7,9 +7,7 @@ Follow the procedures given in the instructions below, to set up all the necessa
 ## Raven Installation instructions - Steps to follow 
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Please Refer to the instructions from the manufacturer of your robot manufacturer
-  In case you need to create a generic ros workspace the following links would help you.
-  * https://moveit.ros.org/install/ 
-  * https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html 
+  In case you need to create a generic ros workspace follow the tutorials from [ROS](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html ) and [Moveit](https://moveit.ros.org/install/ ).
 ### Clone the RAVEN package to the catkin workspace
  ```
   git clone https://github.com/vivekcdavid/raven.git
