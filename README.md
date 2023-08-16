@@ -221,6 +221,6 @@ To run this optimization process follow the instructions below.
 * this process would repeat for 2 more times.
 * and finally few graphs with the optimization results would be generated. after closing them the final code would be generated.
 
-  ## Citing
+## Citing
 
 Please cite this work as:
