@@ -16,7 +16,7 @@ Follow the procedures given in the instructions below, to set up all the necessa
   ```
 
 ### Create the ikfast-plugin for your robot
-   To generate IKFast plugin, follow the instructions in the following tutorial form moveit [http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html]("IKFast Tutorial"). This method relies on a docker container for[http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types ] (Openrave) which makes it staraightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html](Moveit Hydro) or [https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html](this tutorial), which explains the process clearly.
+   To generate IKFast plugin, follow the instructions in the following tutorial form moveit ["IKFast Tutorial"](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html). This method relies on a docker container for[Openrave ](http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types) which makes it staraightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for[Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
 
 ```
 While generating the plugin use the _transform6d_ type
@@ -35,7 +35,7 @@ While generating the plugin use the _transform6d_ type
   
   [https://www.orocos.org/wiki/Installation_Manual.html](https://www.orocos.org/wiki/Installation_Manual.html) //link to follow for installation of package 
   
-  [https://wiki.ros.org/ROS/Tutorials/BuildingPackages](ROS) //link for using cmake  
+  [https://wiki.ros.org/ROS/Tutorials/BuildingPackages]([ROS](https://wiki.ros.org/ROS/Tutorials/BuildingPackages)) //link for using cmake  
   
   Steps 
   1. Go to the workspace and source the workspace 
