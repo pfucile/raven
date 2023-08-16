@@ -109,6 +109,13 @@ Do this in the src folder of the environment
 ### Creating and running bash script for launching the RAVEN
 Depending on the robot there will be changes in the exact code which has to be executed for running the printing system. But the sequence of steps that should be taken is as follows;
 * The robot(simulated/real) should be connected with the workstation
+* Then Movit should be launched and it should be able to control the robot
+* Then it should be ensured that the joint_states should be avilable from
+   ```
+  robot/joint_states
+   ```
+  This can be done by running ```rostopic list``` to see all the avilable topis and you can use ```rostopic echo <topic_name>```
+* if needed some ros topics will have to be relyed.  
 * use the bash script templates available in the scripts folder for your reference 
 ### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
   * change the PLANNING_GROUP to the group name used in moveit
