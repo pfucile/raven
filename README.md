@@ -196,6 +196,9 @@ Make the file executable using chmod +x and restart the computer
 ## Instructions for printing 
 
   For printing the Gcode which is in the prescribed RAVEN format should be pasted in the converted_file.txt file.
-  Then to print run  the RAVEN.bash to print on the real robot or RAVEN_Sim.bash to simulate the motion in gazebo.
+  Then to print run  the RAVEN.bash to print on the real robot or RAVEN_Sim.bash to simulate the motion in Gazebo.
   
-  first time that you are printing it is advised to put only two points and you should have access to the emergency stop at all times during the tests
+  The first time that you are printing it is advised to put only two points and you should have access to the emergency stop at all times during the tests.
+  To plot graphs you can use ```rosrun raven plotter.py```.
+
+## Instructions for using an optimizer for optimizing your Gcode
