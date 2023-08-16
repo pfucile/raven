@@ -18,13 +18,14 @@ Follow the procedures given in the instructions below, to set up all the necessa
 ### Create the ikfast-plugin for your robot
 To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it staraightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
 
-
-- While generating the plugin use the [transform6d ](http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types) type
-
-  Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
-  To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from 
+While generating the plugin use the [transform6d ](http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types) type
+Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
+To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from 
    ```
- From  “kdl_kinematics_plugin/KDLKinematicsPlugin” to “<myrobot_name>_<planning_group_name>_kinematics/IKFastKinematicsPlugin”  
+ “kdl_kinematics_plugin/KDLKinematicsPlugin” 
+to 
+ ```
+  “<myrobot_name>_<planning_group_name>_kinematics/IKFastKinematicsPlugin”  
    ```
   
 ### Now we need to setup Descartes in the workspace
