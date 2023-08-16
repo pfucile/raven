@@ -1,6 +1,3 @@
-//
-// Created by vivek on 16-6-23.
-//
 
 #ifndef RAVEN_RAVEN_CODE_FUNCTIONS_H
 #define RAVEN_RAVEN_CODE_FUNCTIONS_H
