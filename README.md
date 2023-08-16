@@ -166,7 +166,7 @@ elif option == "-run":
  ```
 Make the file executable using chmod +x and restart the computer 
 
-### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
+### Edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
   * change the PLANNING_GROUP to the group name used in moveit
   * change tcp_frame to the name if the end-effector of the robot
   * change base_farame to the name of the base link of the robot 
@@ -179,7 +179,7 @@ Make the file executable using chmod +x and restart the computer
   be pointing down into the ground. so make the robot point down the Rx value should be Pi (3.141592)
   The file shouldn't have any other lines as the first line with comments
 
-#### example 
+#### Example 
   ```
   #G(0/1) F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg# 
   1 0.6 0.002702 0.005 0.01175421 0.0 3.141592653589793 0.3490658503988659 0.0 0 
@@ -220,3 +220,7 @@ To run this optimization process follow the instructions below.
 * Also another dialogue box would have opened asking for log file, without closing this, print using the new gcode and then select the log file generated.
 * this process would repeat for 2 more times.
 * and finally few graphs with the optimization results would be generated. after closing them the final code would be generated.
+
+  ## Citing
+
+Please cite this work as:
