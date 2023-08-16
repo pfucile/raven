@@ -40,7 +40,7 @@ Go to the workspace and source the workspace 
   ```
   Clone the package into the workspace 
   ```
-  git clone [https://github.com/orocos/orocos_kinematics_dynamics.git](https://github.com/orocos/orocos_kinematics_dynamics.git) 
+  git clone https://github.com/orocos/orocos_kinematics_dynamics.git
   ```
   Go into the folder named orocos_kdl
   ```
