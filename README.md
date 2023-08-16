@@ -3,7 +3,7 @@ RAVEN is a robotic printing package aimed at accelerating robotic bioprinting te
 
 Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the Raven Installation instructions section
 ## Disclaimer
-** _This code has only been tested for a few robotic systems. The code is currently in an experimental state, feel free to use this code for your projects and to contribute back to this project. But exercise caution while running the codes on real robots especially while testing the system on your robot for the first time._ **
+___This code has only been tested for a few robotic systems. The code is currently in an experimental state, feel free to use this code for your projects and to contribute back to this project. But exercise caution while running the codes on real robots especially while testing the system on your robot for the first time.___ 
 ## System requirements
 The hardware of the workstation should be capable enough to run gazebo simulations and handle communications with the robot. This package works with ROS Noetic running on Ubuntu 20.04. For communications with the extruder via USB the USER should be added to the dialout group.  
 ## Raven Installation instructions - Steps to follow 
