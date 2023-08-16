@@ -3,11 +3,11 @@ RAVEN is a robotic printing package aimed at accelerating robotic bioprinting te
 
 Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the Raven Installation instructions section
 ## System requirements
-The hardware of the workstation should be capable enough to run gazebo simulations and handle communications with the robot. This package workes with ROS Noetic running on Ubuntu 20.04. For communications with the extruder via USB the USER should be added to the dialout group.  
+The hardware of the workstation should be capable enough to run gazebo simulations and handle communications with the robot. This package works with ROS Noetic running on Ubuntu 20.04. For communications with the extruder via USB the USER should be added to the dialout group.  
 ## Raven Installation instructions - Steps to follow 
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Please Refer to the instructions from the manufacturer of your robot manufacturer
-  In case you need to create a generic ros workspace follow the tutorials from [ROS](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html ) and [Moveit](https://moveit.ros.org/install/ ).
+  In case you need to create a generic ros workspace follow the tutorials from [ROS](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html ) and [Moveit](https://moveit.ros.org/install/ ). All the following instructions assume that the workspace is created in the home folder of the OS and it is named "ws_moveit".
 ### Clone the RAVEN package to the catkin workspace
  ```
   git clone https://github.com/vivekcdavid/raven.git
