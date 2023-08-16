@@ -112,15 +112,15 @@ Depending on the robot there will be changes in the exact code which has to be e
 * use the bash script templates available in the scripts folder for your reference 
 ### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
   * change the PLANNING_GROUP to the group name used in moveit
-  * change tcp_frame to the eff name being used
-  * change base_farem to the base name being used 
+  * change tcp_frame to the name if the end-effector of the robot
+  * change base_farame to the name of the base link of the robot 
   * set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
-  * change the endeffector in position_publisher and sub_plotter
+  * change the end-effector in position_publisher and sub_plotter
 
 ## Instructions from making a Gcode for RAVEN
 
-  // set the orientation. By default, the tool will be pointing up into the air when we usually want it to  
-  // be pointing down into the ground. so make the robot point down the Rx value should be Pi (3.14.......)
+  By default in Moveit/Descartes the tool will be pointing up into the air.  But we want it to  
+  be pointing down into the ground. so make the robot point down the Rx value should be Pi (3.141592)
   The file shouldn't have any other lines as the first line with comments
 
 #### example 
