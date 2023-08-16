@@ -209,9 +209,8 @@ Make the file executable using chmod +x and restart the computer
 This simple optimization process makes it possible to use less reliable robotic arms also for 3D printing. It works by comparing the trajectory the robot actually followed with the path that was specified in the Gcode. Thus the deviation from the ideal trajectory is calculated and this is used to create a corrected Gcode file. This process is iterated 3 times to obtain the final 
 optimized Gcode.
 
+#### !!!_This is an experimental code. You can use this code at your own risk_!!!
 To run this optimization process follow the instructions below.
-
-#### !!!This is an experimental code. You can use this code at your own risk!!!
 * Open a separate terminal and source the workspace
 * Run the command ```rosrun raven post_processing.py```
 * Then a dialogue box will open up asking you to select the original trajectory file, select the file here
