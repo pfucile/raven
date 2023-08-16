@@ -202,4 +202,17 @@ Make the file executable using chmod +x and restart the computer
   To plot graphs you can use ```rosrun raven plotter.py```.
 
 ## Instructions for using an optimizer for optimizing your Gcode
-  For printing the Gcode which is in the prescribed RAVEN format should be pasted in the converted_file.txt file.
+
+#### !!!This is an experimental code. You can use this code at your own risk!!!
+This simple optimization process makes it possible to use less reliable robotic arms also for 3D printing. It works by comparing the trajectory the robot actually followed with the path that was specified in the Gcode. Thus the deviation from the ideal trajectory is calculated and this is used to create a corrected Gcode file. This process is iterated 3 times to obtain the final 
+optimized Gcode.
+To run this optimization process follow the instructions below.
+* Open a separate terminal and source the workspace
+* Run the command ```rosrun raven post_processing.py```
+* Then a dialogue box will open up asking you to select the original trajectory file, select the file here
+* Then another dialogue box will as you to select the log file which was created after as successful fun of the Gcode
+* The program will generate some graphs, you can close them after checking them.
+* After the graphs are closed, a new gcode file will be generated with the file name <original_trajectory_file>__processed_with_<log_file_name>_iteration_num_0.txt
+* Also another dialogue box would have opened asking for log file, without closing this, print using the new gcode and then select the log file generated.
+* this process would repeat for 2 more times.
+* and finally few graphs with the optimization results would be generated. after closing them the final code would be generated.
