@@ -1,5 +1,5 @@
 # RAVEN Robotic-Bioprinting-3D-Mentor
-RAVEN is a robotic printing package aimed at accelerating robotic bioprinting technology development. The package makes it possible to convert a robot arm with six or seven degrees of freedom (6DOF or 7DOF) into a 3D printing  system. RAVEN handles the path planning for the robot and enables the simultaneous control of an extruder which is connected to the workstation via a USB connection. We are using Descartes Cartesian planner for trajectory planning. To improve the performance of the Descartes planner we are using IKFast Kinematic plugin for the Inverse kinematics this will have to be generated for your robot as explained in the instructions below.  We hope that this system would enable the printing of more advanced scaffold structures helping improve the tissue engineering field. 
+RAVEN is a robotic printing package aimed at accelerating robotic bioprinting technology development. The package makes it possible to convert a robot arm with six or seven degrees of freedom (6DOF or 7DOF) into a 3D printing  system. RAVEN handles the path planning for the robot and enables the simultaneous control of an extruder which is connected to the workstation via a USB connection. We are using Descartes Cartesian planner for trajectory planning. To improve the performance of the Descartes planner we are using IKFast Kinematic plugin for the Inverse kinematics this will have to be generated for your robot as explained in the instructions below. The package is capable of simulating the motion of the robot in Gazebo if needed, thus is useful while working with complicated trajectories for the first time. We hope that this system would enable the printing of more advanced scaffold structures helping improve the tissue engineering field. 
 
 Follow the procedures given in the instructions below, to set up all the necessary software and dependencies for getting the workspace up and running. The code in the repository assumes that you are using the xARM7 robot from UFactory. Instructions to edit the files according to your robot are also explained in the Raven Installation instructions section
 ## System requirements
@@ -14,7 +14,7 @@ The hardware of the workstation should be capable enough to run gazebo simulatio
   ```
 
 ### Create the ikfast-plugin for your robot
-To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it staraightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
+To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it straightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
 
 While generating the plugin use the [transform6d ](http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types) type
 Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
@@ -106,8 +106,10 @@ Do this in the src folder of the environment
   OR
   Follow the example given in the following link; 
   https://github.com/garyservin/serial-example/blob/master/src/serial_example_node.cpp 
-### Edit the bash file for launching the RAVEN according to the procedure for your robot
-  * use the bash script templates available in the scripts folder for your reference 
+### Creating and running bash script for launching the RAVEN
+Depending on the robot there will be changes in the exact code which has to be executed for running the printing system. But the sequence of steps that should be taken is as follows;
+* The robot(simulated/real) should be connected with the workstation
+* use the bash script templates available in the scripts folder for your reference 
 ### edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
   * change the PLANNING_GROUP to the group name used in moveit
   * change tcp_frame to the eff name being used
@@ -119,7 +121,7 @@ Do this in the src folder of the environment
 
   // set the orientation. By default, the tool will be pointing up into the air when we usually want it to  
   // be pointing down into the ground. so make the robot point down the Rx value should be Pi (3.14.......)
-  The file shouldn't have any other lines as the first line with commnts
+  The file shouldn't have any other lines as the first line with comments
 
 #### example 
 ```
@@ -133,8 +135,8 @@ Do this in the src folder of the environment
 ```
 
   
-  If you have a standard gcode created in Marlin flavour you can use the Gcode_converter.py file to conver to the RAVEN Gcode format
-  for this paste the gcode section with the motion into the to_convert.txt file and run the Gcode_converter.py file
+  If you have a standard Gcode created in Marlin flavour you can use the Gcode_converter.py file to convert to the RAVEN Gcode format
+  for this paste the Gcode section with the motion into the to_convert.txt file and run the Gcode_converter.py file
 
 
 ## Instructions for printing 
