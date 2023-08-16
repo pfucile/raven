@@ -6,7 +6,6 @@ The code in the repository assumes that you are using the xARM7 robot from UFact
 ___This code has only been tested for a few robotic systems. The code is currently in an experimental state, feel free to use this code for your projects and to contribute back to this project. But exercise caution while running the codes on real robots especially while testing the system on your robot for the first time.___ 
 ## System requirements
 The hardware of the workstation should be capable enough to run gazebo simulations and handle communications with the robot. This package works with ROS Noetic running on Ubuntu 20.04. For the RAVEN system to work properly the extruder should be attached to the robot such that it is collinear with the Z-axis of the end-effector of the robot. The extruder should be controlled by a standard FDM printer control board which in-turn is connected to the workstation via a USB connection. For communications with the extruder via USB the USER should be added to the dialout group by running ```sudo usermod -aG dialout yourusername```.
-.  
 ## Raven Installation instructions - Steps to follow 
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Please Refer to the instructions from the manufacturer of your robot manufacturer
@@ -93,6 +92,7 @@ source devel/setup.bash
   cd ~/ws_moveit/
   catkin_make 
   ```
+Dont forget to add the user to the dialout group by running ports```sudo usermod -aG dialout yourusername```, so that RAVEN can access the serial 
 ### Creating and running bash script for launching the RAVEN
 Depending on the robot there will be changes in the exact code which has to be executed for running the printing system. But the sequence of steps that should be taken is as follows;
 * The robot(simulated/real) should be connected with the workstation
