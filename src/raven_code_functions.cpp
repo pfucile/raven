@@ -1,6 +1,3 @@
-//
-// Created by vivek on 16-6-23.
-//
 #include "raven_code_functions.h"
 #include <iostream>
 #include <string>
