@@ -25,7 +25,7 @@ While generating the plugin use the _transform6d_ type
   Now we need to copy the IKFast plugging we generated into the src folder of the workspace and then run the “catkin_make” command. 
   To use Descartes we need to edit the kinematics.yaml file and change the kinematics solver from 
    ```
- From  “kdl_kinematics_plugin/KDLKinematicsPlugin” to “sawyer_right_arm/IKFastKinematicsPlugin”  
+ From  “kdl_kinematics_plugin/KDLKinematicsPlugin” to “<myrobot_name>_<planning_group_name>_kinematics/IKFastKinematicsPlugin”  
    ```
   
 ### Now we need to setup Descartes in the workspace
