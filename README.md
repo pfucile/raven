@@ -84,7 +84,8 @@ Source the workspace 
 source devel/setup.bash
 ```
 ### Installing the "serial" package for communicating with the extruder
-  This [package](http://wjwwood.io/serial/ ) is used for communication with the extruders' controller board. The instructions given below are based on the instructions from the [website](http://wjwwood.io/serial/doc/1.1.0/index.html).https://github.com/wjwwood/serial
+  This [package](http://wjwwood.io/serial/ ) is used for communication with the extruders' controller board. The instructions given below are based on the instructions from the 
+  [website](http://wjwwood.io/serial/doc/1.1.0/index.html).https://github.com/wjwwood/serial
   
 Do this in the src folder of the environment 
  ```
