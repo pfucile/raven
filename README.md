@@ -167,11 +167,12 @@ elif option == "-run":
 Make the file executable using chmod +x and restart the computer 
 
 ### Edit the Group names and other particulars in the raven file(src/raven_code.cpp) according to the specifications of the robot
-  * change the PLANNING_GROUP to the group name used in moveit
-  * change tcp_frame to the name if the end-effector of the robot
-  * change base_farame to the name of the base link of the robot 
-  * set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
-  * change the end-effector in position_publisher and sub_plotter
+  * Edit the " path_to_file" according to your folder structure
+  * Change the PLANNING_GROUP to the group name used in moveit
+  * Set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
+  * Change tcp_frame to the name if the end-effector of the robot
+  * Change base_farame to the name of the base link of the robot 
+  * Change the end-effector in position_publisher and sub_plotter
 
 ## Instructions from making a Gcode for RAVEN
 
