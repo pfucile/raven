@@ -162,7 +162,7 @@ source devel/setup.bash
   catkin_make 
   ```
 Don't forget to add the user to the dialout group by running ports```sudo usermod -aG dialout yourusername```, so that RAVEN can access the serial 
-### Creating and running bash script for launching the RAVEN
+### Creating and running bash script for launching RAVEN
 Depending on the robot there will be changes in the exact code which has to be executed for running the printing system. But the sequence of steps that should be taken is as follows;
 * The robot(simulated/real) should be connected with the workstation
 * Then Movit should be launched and it should be able to control the robot
