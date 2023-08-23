@@ -15,6 +15,71 @@ The hardware of the workstation should be capable enough to run Gazebo simulatio
   git clone https://github.com/vivekcdavid/raven.git
   ```
 
+### Modifying the URDF to include the extruder
+Usually, commercial robotic arms will have a gripper or some tool that can be attached to the robot. Usually, the manufacturer would provide the URD for this tool. We can make use of this basic structure and create a URDF for our tool so that it can be attached to our robot. The path to the CAD models would also have to be given in the URDF. Follow the [tutorials for URDF](http://wiki.ros.org/urdf/Tutorials) to understand how this can be done, also please refer to the documentation of the manufacturer of the robot to for further details.
+
+an example of URDF used to define an extruder is given here.
+ ```
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="extruder">
+  <xacro:macro name="extruder_urdf" params="prefix:='' attach_to:='' attach_xyz:='0 0 0' attach_rpy:='0 0 0' ">
+    <xacro:unless value="${attach_to == ''}">
+      <joint name="${prefix}extruder_support_joint" type="fixed">
+        <parent link="${attach_to}"/>
+        <child link="${prefix}extruder_support"/>
+        <origin xyz="${attach_xyz}" rpy="${attach_rpy}"/>
+      </joint>
+    </xacro:unless>
+    <link name="${prefix}extruder_support">
+      <xacro:common_link_visual 
+        mesh_filename="Extruder/Support_v3_scaled.STL"
+        origin_xyz="-0.0382 -0.054 0" 
+        origin_rpy="0 0 0"
+        material_name="${prefix}White" />
+      <xacro:common_link_collision 
+        mesh_filename="Extruder/Support_v3_scaled.STL"  
+        origin_xyz="-0.0382 -0.054 0" 
+        origin_rpy="0 0 0" />
+      <inertial>
+        <origin rpy="0 0 0" xyz="-0.00033 -0.025 0.025"/>
+        <mass value="0.115"/>
+        <inertia ixx="0.00018075" ixy="0.000000999" ixz="-0.0000001" iyy="0.00019342" iyz="-0.00002871" izz="0.0001586"/>
+      </inertial>
+    </link>
+    <joint name="${prefix}extruder_attachment" type="fixed">
+      <origin xyz="0.0935 0 0.0535" rpy="0 0 0" />
+      <axis xyz="0 0 1"/> 
+      <parent link="${prefix}extruder_support" />
+      <child link="${prefix}extruder_body" />
+    </joint>
+    <link name="${prefix}extruder_body">
+      <xacro:common_link_visual 
+        mesh_filename="Extruder/E3D_Hemera_Scaled.STL"
+        origin_xyz="-0.0925 -0.025 0.0175" 
+        origin_rpy="0 0 0"
+        material_name="${prefix}White" />
+      <xacro:common_link_collision 
+        mesh_filename="Extruder/E3D_Hemera_Scaled.STL"  
+        origin_xyz="-0.0925 -0.025 0.0175" 
+        origin_rpy="0 0 0" />
+      <inertial>
+        <origin rpy="0 0 0" xyz="-0.0000158 0.0157447 0.0206782"/>
+        <mass value="0.388"/>
+        <inertia ixx="0.0001648" ixy="0.0000003" ixz="0.0000007" iyy="0.0001217" iyz="-0.0000008" izz="0.0001603"/>
+      </inertial>
+    </link>
+    <link name="${prefix}extruder_tip" />
+    <joint name="${prefix}extruder_tcp" type="fixed">
+      <origin xyz="0.094 0 0.0535" rpy="0 0 0" />
+      <axis xyz="0 0 1"/> 
+      <parent link="${prefix}extruder_body" />
+      <child link="${prefix}extruder_tip" />
+    </joint>
+  </xacro:macro>
+</robot>
+ ```
+
+After editing the URDF we need to reconfigure the Moveit Configuration files accordingly. This can be done using the [MoveIt Setup Assistant](https://ros-planning.github.io/moveit_tutorials/doc/setup_assistant/setup_assistant_tutorial.html) 
 ### Create the ikfast-plugin for your robot
 To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it straightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
 
