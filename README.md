@@ -79,7 +79,11 @@ an example of URDF used to define an extruder is given here.
 </robot>
  ```
 
-After editing the URDF we need to reconfigure the Moveit Configuration files accordingly. This can be done using the [MoveIt Setup Assistant](https://ros-planning.github.io/moveit_tutorials/doc/setup_assistant/setup_assistant_tutorial.html) 
+After editing the URDF we need to reconfigure the Moveit Configuration files accordingly. This can be done using the [MoveIt Setup Assistant](https://ros-planning.github.io/moveit_tutorials/doc/setup_assistant/setup_assistant_tutorial.html).
+```
+roslaunch moveit_setup_assistant setup_assistant.launch
+```
+Make sure everything is aligned in the preview of the robot. Also, change the end-effector to the tip of the extruder and then generate the new Moveit configuration.   
 ### Create the ikfast-plugin for your robot
 To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it straightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
 
