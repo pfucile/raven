@@ -136,9 +136,9 @@ def allign_in_time(goal_array,recorded_array):
     recorded_array_shifted [:, 3] += time_shift
     return recorded_array_shifted
 def compensate_fixed_shifts(recorded_array):
-    recorded_array [:, 0] += 0.0022
-    recorded_array [:, 1] += 0.0017
-    recorded_array [:, 2] += 0.004
+    recorded_array [:, 0] += 0.0022 # Adjust this number if there are constant shift/error in the axis which is always present (x axis)
+    recorded_array [:, 1] += 0.0017 # Adjust this number if there are constant shift/error in the axis which is always present (y axis)
+    recorded_array [:, 2] += 0.004  # Adjust this number if there are constant shift/error in the axis which is always present (z axis)
     return recorded_array
 def calculate_error(goal_array,recorded_array_shifted):
     ## now lets calculate the error in each axis assuming the alignment process is successful
