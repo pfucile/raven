@@ -452,6 +452,8 @@ def interation(iter_num,traj_file,goal_array_0,kernal_size):
 set_of_recorded_array = []
 set_of_error_array = []
 set_of_correction_array = []
+#to compensate for the inherent shift in the system
+fixed_shifts = [0.0,0.0,0.0] #Adjust these numbers if there are constant shift/error in the axis which is always present [x,y,z]
 original_traj_file = select_file("../Documents/","select the original trajectory file")
 original_traj_file_name = os.path.basename(original_traj_file).strip('.txt')
 number_of_iterations = 3
@@ -477,7 +479,6 @@ for i in range ( number_of_iterations-1):
 selected_file = select_file("../Documents/","select the log file for this trajectory- Iteration number "+str(number_of_iterations+1))
 goal_array, recorded_array, TBP_total = convert_to_np_array(selected_file)
 #to compensate for the inherent shift in the system
-fixed_shifts = [0.0,0.0,0.0] #Adjust these numbers if there are constant shift/error in the axis which is always present [x,y,z]
 recorded_array = compensate_fixed_shifts(recorded_array)
 ## the mechanism to align the two graphs in time axis
 recorded_array_shifted = allign_in_time(goal_array_0,recorded_array)
