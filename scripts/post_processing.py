@@ -136,9 +136,9 @@ def allign_in_time(goal_array,recorded_array):
     recorded_array_shifted [:, 3] += time_shift
     return recorded_array_shifted
 def compensate_fixed_shifts(recorded_array):
-    recorded_array [:, 0] += 0.0022 
-    recorded_array [:, 1] += 0.0017 
-    recorded_array [:, 2] += 0.004  
+    recorded_array [:, 0] += fixed_shifts[0]
+    recorded_array [:, 1] += fixed_shifts[1]
+    recorded_array [:, 2] += fixed_shifts[2] 
     return recorded_array
 def calculate_error(goal_array,recorded_array_shifted):
     ## now lets calculate the error in each axis assuming the alignment process is successful
@@ -477,7 +477,7 @@ for i in range ( number_of_iterations-1):
 selected_file = select_file("../Documents/","select the log file for this trajectory- Iteration number "+str(number_of_iterations+1))
 goal_array, recorded_array, TBP_total = convert_to_np_array(selected_file)
 #to compensate for the inherent shift in the system
-fixed_shifts = [0.0,0.0,0.0] #the 
+fixed_shifts = [0.0,0.0,0.0] #Adjust these numbers if there are constant shift/error in the axis which is always present [x,y,z]
 recorded_array = compensate_fixed_shifts(recorded_array)
 ## the mechanism to align the two graphs in time axis
 recorded_array_shifted = allign_in_time(goal_array_0,recorded_array)
