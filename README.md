@@ -257,7 +257,8 @@ sudo chmod +x target_term
   * Change the PLANNING_GROUP to the group name used in moveit
   * Set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
   * Change tcp_frame to the name of the end-effector of the robot
-  * Change world_frame to the name of the base link of your robot 
+  * Change world_frame to the name of the base link of your robot
+ 
 Also, change the group_name name in the files Position_publisher.py and Data_logger.py according to your naming.
 
 ## Instructions for making a Gcode for RAVEN
