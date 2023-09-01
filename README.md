@@ -163,8 +163,8 @@ Don't forget to add the user to the dialout group by running ports```sudo usermo
   ```
 Now build the workspace again
  ```
-  source /opt/ros/noetic/setup.bash 
   cd ~/ws_moveit
+  source /opt/ros/noetic/setup.bash 
   catkin_make 
   ```
 Now source ros and the workspace again
