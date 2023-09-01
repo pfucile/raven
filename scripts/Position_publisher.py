@@ -12,9 +12,10 @@ rate = rospy.Rate(2)
 a = PoseStamped()
 
 # remapin the topic for sawyer_gazebo
+group_name = "xarm7"
 joint_state_topic = ['joint_states:=/robot/joint_states']
 moveit_commander.roscpp_initialize(joint_state_topic)
-sawyer_group = moveit_commander.MoveGroupCommander("xarm7")
+sawyer_group = moveit_commander.MoveGroupCommander(group_name)
 
 while not rospy.is_shutdown():
     current_pose = sawyer_group.get_current_pose()
