@@ -156,7 +156,7 @@ source devel/setup.bash
   cd ~/ws_moveit/
   catkin_make 
   ```
-Don't forget to add the user to the dialout group by running ports```sudo usermod -aG dialout yourusername```, so that RAVEN can access the serial 
+Don't forget to add the user to the dialout group by running ports```sudo usermod -aG dialout $USER```, so that RAVEN can access the serial 
 ### Clone the RAVEN package to the catkin workspace
  ```
   git clone https://github.com/vivekcdavid/raven.git
@@ -189,7 +189,12 @@ install wmctrl and xdotool:
      ```
     sudo apt-get install wmctrl xdotool 
      ```
-Create a file named target_term in the /bin folder and copy paste the following code into it; 
+Create a file named target_term in the /bin folder using the following command;
+```
+cd /bin
+sudo nano target_term
+```
+and copy paste the following code into it and save the file; 
  ```
 #!/usr/bin/env python3
 import subprocess
@@ -241,7 +246,11 @@ elif option == "-run":
     command = (" ").join(sys.argv[3:])
     run_intterm(t_term, command)
  ```
-Make the file executable using chmod +x and restart the computer 
+then run the following command and make the file executable;
+```
+cd /bin
+sudo chmod +x target_term
+```
 
 ### Editing RAVEN file(src/raven_code.cpp) according to the specifications of the robot
   * Edit the " path_to_file" according to your folder structure
