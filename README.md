@@ -10,10 +10,6 @@ The hardware of the workstation should be capable enough to run Gazebo simulatio
 ### Create a catkin workspace according to the procedure for your robot
   You should follow the instructions specifically for your robot. Please Refer to the instructions from the manufacturer of your robot manufacturer
   In case you need to create a generic ros workspace follow the tutorials from [ROS](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html ) and [Moveit](https://moveit.ros.org/install/ ). All the following instructions assume that the workspace is created in the home folder of the OS and it is named "ws_moveit".
-### Clone the RAVEN package to the catkin workspace
- ```
-  git clone https://github.com/vivekcdavid/raven.git
-  ```
 
 ### Modifying the URDF to include the extruder
 Usually, commercial robotic arms will have a gripper or some tool that can be attached to the robot. Usually, the manufacturer would provide the URD for this tool. We can make use of this basic structure and create a URDF for our tool so that it can be attached to our robot. The path to the CAD models would also have to be given in the URDF. Follow the [tutorials for URDF](http://wiki.ros.org/urdf/Tutorials) to understand how this can be done, also please refer to the documentation of the manufacturer of the robot to for further details.
@@ -118,8 +114,7 @@ Go to the workspace and source the workspace 
   In the window that open up, press c for configuring then go down to the CMAKE_INSTALL_PREFIX option and then press enter then replace the path with “/opt/ros/noetic”. Then press enter to confirm. Then press c to configure. Then press g to generate the files. 
   Then run the following commands in the terminal 
   ```
-  make 
-  make check 
+  make
   sudo make install
   ```
   * Installing [Descartes](http://wiki.ros.org/descartes/Tutorials/Getting%20Started%20with%20Descartes) from source;
@@ -131,7 +126,7 @@ Go to the workspace and source the workspace 
   source /opt/ros/noetic/setup.bash 
   cd ~/ws_moveit/src 
   git clone https://github.com/ros-industrial-consortium/descartes.git 
-  cd ~/ws_moveit/src  
+  cd ~/ws_moveit 
   rosdep install -r -y --from-paths src --ignore-src 
   catkin_make 
   source devel/setup.bash
@@ -162,6 +157,22 @@ source devel/setup.bash
   catkin_make 
   ```
 Don't forget to add the user to the dialout group by running ports```sudo usermod -aG dialout yourusername```, so that RAVEN can access the serial 
+### Clone the RAVEN package to the catkin workspace
+ ```
+  git clone https://github.com/vivekcdavid/raven.git
+  ```
+Now build the workspace again
+ ```
+  source /opt/ros/noetic/setup.bash 
+  cd ~/ws_moveit
+  catkin_make 
+  ```
+Now source ros and the workspace again
+ ```
+  cd ~/ws_moveit
+  source /opt/ros/noetic/setup.bash 
+  source devel/setup.bash
+  ```
 ### Creating and running bash script for launching RAVEN
 Depending on the robot there will be changes in the exact code which has to be executed for running the printing system. But the sequence of steps that should be taken is as follows;
 * The robot(simulated/real) should be connected with the workstation
