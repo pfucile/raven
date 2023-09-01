@@ -182,7 +182,7 @@ Depending on the robot there will be changes in the exact code which has to be e
 * Then the data logging function of RAVEN can be started by running ```rosrun raven Position_publisher.py```  and ```rosrun raven Data_logger.py```.
 * Then the RAVEN can be laucnhed by running ```roslaunch raven raven_launch_file.launch```
 
-Use the bash script templates available in the scripts folder for your reference.
+Use the bash script templates available in the scripts folder (ws_moveit/src/raven/scripts) for your reference.
 To run this bash script we need to set up another script that handles running commands along different terminals. To run the simulation or a script for the real robot, multiple commands have to be executed on multiple terminals in Ubuntu. This Bash script helps us to automate this process. This file uses a script to automatically send our commands to the designated terminal window. More details can be found in [this links](https://askubuntu.com/questions/641683/how-can-i-send-commands-to-specific-terminal-windows). In order for this script to work please follow the instructions given below. 
 
 install wmctrl and xdotool: 
@@ -252,13 +252,13 @@ cd /bin
 sudo chmod +x target_term
 ```
 
-### Editing RAVEN file(src/raven_code.cpp) according to the specifications of the robot
+### Editing RAVEN file(ws_moveit/src/raven/src/raven_code.cpp) according to the specifications of the robot
   * Edit the " path_to_file" according to your folder structure
   * Change the PLANNING_GROUP to the group name used in moveit
   * Set the FollowJointTrajectoryAction topic based on the rostopics being published by the robot
-  * Change tcp_frame to the name if the end-effector of the robot
-  * Change base_farame to the name of the base link of the robot 
-  * Change the end-effector in position_publisher and sub_plotter
+  * Change tcp_frame to the name of the end-effector of the robot
+  * Change world_frame to the name of the base link of the robot 
+Also, change the end-effector name in position_publisher.py and sub_plotter.py also 
 
 ## Instructions for making a Gcode for RAVEN
 
