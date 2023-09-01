@@ -33,8 +33,9 @@ sub_goal = None
 current_pose = None
 
 joint_state_topic = ['joint_states:=/robot/joint_states']
+group_name = "xarm7"
 moveit_commander.roscpp_initialize(joint_state_topic)
-sawyer_group = moveit_commander.MoveGroupCommander("xarm7")
+sawyer_group = moveit_commander.MoveGroupCommander(group_name)
 dirname =  "../Documents/" # set the folder for saving the log file
 message1= "data logger running, The log data is being stored as txt files in the folder - "
 print(message1+ dirname)
