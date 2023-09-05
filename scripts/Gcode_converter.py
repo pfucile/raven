@@ -6,9 +6,9 @@ import math
 #this code shifts the position of the printing to left side of the table while converting the gcode
 points = []
 #reading the path from the file
-file = open('../ws_moveit/src/pkg_for_descartes/scripts/to_convert.txt', 'r')
+file = open('../xarm_ws/src/raven/scripts/to_convert.txt', 'r')
 [speed,X_val,Y_val,Z_val,E_val] = [0,0,0,0,0]
-Converted_file = open("../ws_moveit/src/pkg_for_descartes/scripts/Converted_file.txt", "w")
+Converted_file = open("../xarm_ws/src/raven/scripts/to_convert.txt", "w")
 Converted_file.write("#G(0/1) F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg#\n")
 
 
@@ -18,7 +18,7 @@ Rz = 0.0
 s = 0
 
 def check_relative_cooordinate ():
-    file = open('../ws_moveit/src/pkg_for_descartes/scripts/to_convert.txt', 'r')
+    file = open('../xarm_ws/src/raven/scripts/to_convert.txt', 'r')
     relative1  = "M83"
     relative2  = "M91"
     lines = file.readlines()
