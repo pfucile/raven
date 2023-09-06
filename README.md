@@ -81,7 +81,42 @@ roslaunch moveit_setup_assistant setup_assistant.launch
 ```
 Make sure everything is aligned in the preview of the robot. Also, change the end-effector to the tip of the extruder and then generate the new Moveit configuration.   
 ### TCP Calibration
-To calibrate the TCP (i.e. the tip of the extruder) in the URDF (to make sure the model defined in URDF is the same as the actual extruder on the real robot) we can use the [TCP Calibration package](https://github.com/Jmeyer1292/tool_point_calibration). Follow the instructions on the website to setup and use the package, based on the results edit the URDF. Use the command ``` wget http://ceres-solver.org/ceres-solver-2.1.0.tar.gz ``` to  get the files to install Ceres solver.
+To calibrate the TCP (i.e. the tip of the extruder) in the URDF (to make sure the model defined in URDF is the same as the actual extruder on the real robot) we can use the [TCP Calibration package](https://github.com/Jmeyer1292/tool_point_calibration). Follow the instructions on the website to setup and use the package, based on the results edit the URDF. Use the following commands to install the package and its dependencies;
+
+First, we need to install the ceres-solve and its dependencies.
+``` # CMake
+sudo apt-get install cmake
+# google-glog + gflags
+sudo apt-get install libgoogle-glog-dev libgflags-dev
+# Use ATLAS for BLAS & LAPACK
+sudo apt-get install libatlas-base-dev
+# Eigen3
+sudo apt-get install libeigen3-dev
+# SuiteSparse (optional)
+sudo apt-get install libsuitesparse-dev
+```
+Now we need to clone the ceres-solve package and make.
+```
+cd ~
+wget http://ceres-solver.org/ceres-solver-2.1.0.tar.gz
+tar zxf ceres-solver-2.1.0.tar.gz
+mkdir ceres-bin
+cd ceres-bin
+cmake ../ceres-solver-2.1.0
+make -j3
+make test
+# Optionally install Ceres, it can also be exported using CMake which
+# allows Ceres to be used without requiring installation, see the documentation
+# for the EXPORT_BUILD_DIR option for more information.
+make install
+```
+Now we need to clone the TCP calibration package into the src folder of our ROS workspace.
+```
+cd ~/ws_mveit/src
+git clone https://github.com/Jmeyer1292/tool_point_calibration/tree/master.git
+```
+
+
 
 ### Create the ikfast-plugin for your robot
 To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it straightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
