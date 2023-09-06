@@ -113,10 +113,9 @@ make install
 Now we need to clone the TCP calibration package into the src folder of our ROS workspace.
 ```
 cd ~/ws_mveit/src
-git clone https://github.com/Jmeyer1292/tool_point_calibration/tree/master.git
+git clone https://github.com/vivekcdavid/tool_point_calibration.git
 ```
-
-
+We need to edit two files in the package since some of the code is outdated.
 
 ### Create the ikfast-plugin for your robot
 To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it straightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
