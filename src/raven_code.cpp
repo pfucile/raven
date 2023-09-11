@@ -45,6 +45,7 @@ float max_print_speed = 2.5; //m/min to be used if the print speed is too high
 float print_temp = 195; //printing temperature
 float nozzle_diameter = 0.4; //mm
 float layer_height = 0.3; //mm
+float extrusion_multiplier = 0.6; //mm
 float filament_diameter = 1.75; //mm
 float starting_point[] = {0.35, 0.25, 0.15}; //give the desired initial starting pose here!!
 float move_down_value = 0.0825;  //adjust this number if the extruder is too close or too far from the print bed
@@ -353,13 +354,14 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
 
 
                 /*
+               
                 //to be used with Gcodes that do not have extrusion values.
                 time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000)/print_velocity ;
                 //to be used with Gcodes that do not have extrusion values.
-                E = sqrt(pow(myArray[i][2]-myArray[i-1][2],2)+pow(myArray[i][3]-myArray[i-1][3],2)+pow(myArray[i][4]-myArray[i-1][4],2))*0.052244897959; //to be used with Gcodes that do not have extrusion values.
+                E = extrusion_multiplier * sqrt(pow(myArray[i][2]-myArray[i-1][2],2)+pow(myArray[i][3]-myArray[i-1][3],2)+pow(myArray[i][4]-myArray[i-1][4],2))*nozzle_diameter*layer_height*4/(M_PI*(pow(filament_diameter,2))); //to be used with Gcodes that do not have extrusion values.
                 if (myArray[i-seq_element_num+j][0] == 1)
                 {
-                    GcodeArray[j+3][1]=  0.9*(sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000)*0.052244897959; //to be used with Gcodes that do not have extrusion values.
+                    GcodeArray[j+3][1]=  extrusion_multiplier*(sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000)*nozzle_diameter*layer_height*4/(M_PI*(pow(filament_diameter,2))); //to be used with Gcodes that do not have extrusion values.
                 }
                 else
                 {
