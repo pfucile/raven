@@ -9,7 +9,7 @@ points = []
 file = open('../xarm_ws/src/raven/scripts/to_convert.txt', 'r')
 [speed,X_val,Y_val,Z_val,E_val] = [0,0,0,0,0]
 Converted_file = open("../xarm_ws/src/raven/scripts/to_convert.txt", "w")
-Converted_file.write("#G(0/1) F(m/min)      X(m)        Y(m)        Z(m)       E(mm)     Rx        Ry          Rz       seg#\n")
+Converted_file.write("#G(0/1) F(m/min)    X(m)      Y(m)      Z(m)       E(mm)       Rx        Ry       Rz    seg#\n")
 
 
 Rx = (math.pi)
@@ -108,8 +108,24 @@ if check_relative_cooordinate () !=1:
                     else:
                         E_val = line[E_inx+1:len_line].strip(' ').strip('\n ')
 
+                # Define the number of decimal places you want for each value
+                decimal_places = 8
+                # Format each value as a string with the desired number of decimal places
+                formatted_line = (
+                	str(g)+" "+
+                	f"{float(speed)/1000:.{decimal_places}f} "
+                	f"{float(X_val)/1000:.{decimal_places}f} "
+                	f"{float(Y_val)/1000:.{decimal_places}f} "
+                	f"{float(Z_val)/1000:.{decimal_places}f} "
+                	f"{float(E_val):.{decimal_places}f} "
+                	f"{Rx:.{decimal_places}f} "
+                	f"{Ry:.{decimal_places}f} "
+                	f"{Rz:.{decimal_places}f} "
+                	+str(s)+"\n"
+                )
                 #converting the values to metres and storing insid the set named points
-                Converted_file.write(str(g)+" "+str(round(float(speed)/1000,8))+" "+str(round((float(X_val)/1000),8))+" "+str(round((float(Y_val)/1000),8))+" "+str(round((float(Z_val)/1000),8))+" "+str(round(float(E_val)*0.8,8))+" "+str(Rx) +" "+str(Ry) +" "+str(Rz)+ " "+str(s)+"\n")
+                Converted_file.write(formatted_line)
+                #Converted_file.write(str(g)+" "+str(round(float(speed)/1000,8))+" "+str(round((float(X_val)/1000),8))+" "+str(round((float(Y_val)/1000),8))+" "+str(round((float(Z_val)/1000),8))+" "+str(round(float(E_val)*0.8,8))+" "+str(Rx) +" "+str(Ry) +" "+str(Rz)+ " "+str(s)+"\n")
                 #print (speed,X_val,Y_val,Z_val,E_val)
             else:
                 pass
@@ -192,8 +208,24 @@ else :
                     E_float = E_float + float(E_val)
                     #print (E_float)
 
+                # Define the number of decimal places you want for each value
+                decimal_places = 8
+                # Format each value as a string with the desired number of decimal places
+                formatted_line = (
+                	str(g)+" "+
+                	f"{float(speed)/1000:.{decimal_places}f} "
+                	f"{float(X_val)/1000:.{decimal_places}f} "
+                	f"{float(Y_val)/1000:.{decimal_places}f} "
+                	f"{float(Z_val)/1000:.{decimal_places}f} "
+                	f"{float(E_val):.{decimal_places}f} "
+                	f"{Rx:.{decimal_places}f} "
+                	f"{Ry:.{decimal_places}f} "
+                	f"{Rz:.{decimal_places}f} "
+                	+str(s)+"\n"
+                )
                 #converting the values to metres and storing insid the set named points
-                Converted_file.write(str(g)+" "+str(round(300/1000,8))+" "+str(round((float(X_val)/1000),8))+" "+str(round((float(Y_val)/1000),8))+" "+str(round((float(Z_val)/1000),8))+" "+str(round(E_float,8))+" "+str(Rx) +" "+str(Ry) +" "+str(Rz)+ " "+str(s)+"\n")
+                Converted_file.write(formatted_line)
+                #Converted_file.write(str(g)+" "+str(round(300/1000,8))+" "+str(round((float(X_val)/1000),8))+" "+str(round((float(Y_val)/1000),8))+" "+str(round((float(Z_val)/1000),8))+" "+str(round(E_float,8))+" "+str(Rx) +" "+str(Ry) +" "+str(Rz)+ " "+str(s)+"\n")
                 #print (speed,X_val,Y_val,Z_val,E_val)
             else:
                 pass
