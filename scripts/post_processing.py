@@ -382,6 +382,7 @@ def generate_corrected_file(original_traj_file,selected_file,iter_num,goal_array
     corrected_file = dirname+original_traj_file_name+"_processed_with_"+ log_file_name +"_iteration_num_"+str(iter_num)+".txt"
     corrected_traj_file = open(corrected_file, 'w')
     line_num = -1
+
     for line in lines:
         if line_num == -1 and '#' not in line.lower():
             line_num = 0
