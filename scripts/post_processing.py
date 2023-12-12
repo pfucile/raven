@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d, Axes3D
 from scipy.optimize import curve_fit
+from scipy.ndimage import gaussian_filter1d
 from matplotlib import rcParams
 from matplotlib.ticker import StrMethodFormatter
 import tkinter as tk
@@ -141,7 +142,7 @@ def compensate_fixed_shifts(recorded_array):
     recorded_array [:, 2] += fixed_shifts[2] 
     return recorded_array
 def calculate_error(goal_array,recorded_array_shifted):
-    ## now lets calculate the error in each axis assuming the alignment process is successful
+    ## now let's calculate the error in each axis assuming the alignment process is successful
     print ("Calculating the error ")
 
     #doing interpolation on the goal array to introduce more points
@@ -429,6 +430,7 @@ def interation_one(original_traj_file,kernal_size):
     error_arr, index_array, start_point = calculate_error(goal_array,recorded_array_shifted)
     #calculating the correction for each axis one point at a time
     correction_array = calculate_correction(goal_array, index_array, start_point,error_arr,kernal_size)
+    correction_array =correction_array_smoothing_function(correction_array,3)
     #plot the graphs
     new_file = generate_corrected_file(original_traj_file,selected_file,0,goal_array,start_point,correction_array)
     return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr
@@ -444,9 +446,23 @@ def interation(iter_num,traj_file,goal_array_0,kernal_size):
     error_arr, index_array, start_point = calculate_error(goal_array_0,recorded_array_shifted)
     #calculating the correction for each axis one point at a time
     correction_array = calculate_correction(goal_array_0, index_array, start_point,error_arr,kernal_size)
+    correction_array =correction_array_smoothing_function(correction_array,3)
     #plot the graphs
     new_file = generate_corrected_file(traj_file,selected_file,iter_num,goal_array_0,start_point,correction_array)
     return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr
+
+def correction_array_smoothing_function(correction_array,sigma):
+     correction_array[:, 0] = gaussian_filter1d(correction_array[:, 0], sigma)
+     correction_array[:, 1] = gaussian_filter1d(correction_array[:, 1], sigma)
+     correction_array[:, 2] = gaussian_filter1d(correction_array[:, 2], sigma)
+     return correction_array
+
+
+
+
+
+
+
 
 ## actual code
 set_of_recorded_array = []
@@ -486,6 +502,7 @@ recorded_array_shifted = allign_in_time(goal_array_0,recorded_array)
 error_arr, index_array, start_point = calculate_error(goal_array_0,recorded_array_shifted)
 #calculating the correction for each axis one point at a time
 correction_array = calculate_correction(goal_array_0, index_array, start_point,error_arr,n)
+correction_array =correction_array_smoothing_function(correction_array,3)
 set_of_recorded_array.append(recorded_array)
 set_of_error_array.append(error_arr)
 #plotting all the trajectories together
