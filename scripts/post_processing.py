@@ -159,11 +159,8 @@ def calculate_error(goal_array,recorded_array_shifted):
         error_z = z_new[i]-recorded_array_shifted[i,2]
         error_arr = np.append(error_arr,[[error_x,error_y,error_z,recorded_array_shifted[i,3]]],axis=0)
 
-    #to find the correction value for x,y and z axis of each points in the goal array.
-    # for this we are using a process similar to convolution which multiplies over all the values on
-    # the recorded_shifted array to obtain a single value of each axis per point
-    # since the get_indices_of_closest_questioned_points function used numba  we need to install numba using the command "pip install numba"
 
+    # since the get_indices_of_closest_questioned_points function used numba  we need to install numba using the command "pip install numba"
     #finding the index corresponding to each points in goal_array
     start_time = 10.0 #the move to start time used in the raven system
     start_point = get_indices_of_closest_questioned_points(np.array([start_time]), goal_array[:,3])
@@ -173,6 +170,10 @@ def calculate_error(goal_array,recorded_array_shifted):
 
 def calculate_correction(goal_array, index_array,start_point,error_arr,n):
     #calculating the correction for each axis one point at a time
+    #to find the correction value for x,y and z axis of each points in the goal array.
+    # for this we are using a process similar to convolution using a Gaussian kernal which multiplies over all the values on
+    # the recorded_shifted array to obtain a single value of each axis per point
+    # the size of the cnvloution kernal can be adjusted using "n"
     correction_array = np.empty(((0, (4))),dtype=float)
     #for creating a kernal with gaussian distribution
     mean = 0.0
@@ -199,6 +200,7 @@ def calculate_correction(goal_array, index_array,start_point,error_arr,n):
                     correction_x = correction_x
                     correction_y = correction_y
                     correction_z = correction_z
+                    correction_point_beginning = i
                 if j >= index_array[np.size(goal_array,0)-2]:
                     correction_x = correction_x
                     correction_y = correction_y
@@ -206,6 +208,11 @@ def calculate_correction(goal_array, index_array,start_point,error_arr,n):
             correction_array = np.append(correction_array,[[correction_x,correction_y,correction_z,goal_array[i,3]]],axis=0)
         else:
             correction_array = np.append(correction_array,[[0.0,0.0,0.0,goal_array[i,3]]],axis=0) #to process the points padded with 0
+    # processing the correction array to make sure there is uniform correction for the starting and the ending of the Gcode
+    adjustemnt_length = correction_point_beginning - start_point
+    for k in range (0,adjustemnt_length+5,1):
+        correction_array[start_point+k] = correction_array [start_point + adjustemnt_length +5+1]
+        correction_array[np.size(goal_array,0)-k-1] = correction_array [np.size(goal_array,0) - adjustemnt_length -1- 5]
     return correction_array
 
 def plot_graphs(goal_array,recorded_array,correction_array,recorded_array_shifted):
@@ -240,17 +247,17 @@ def plot_graphs3D(goal_array,recorded_array,correction_array,recorded_array_shif
     ax.zaxis.labelpad=35
     ax.set_zlabel('$Z (m)$',fontsize=30)
     ax.zaxis._axinfo['label']
-    for t in ax.xaxis.get_major_ticks(): t.label.set_fontsize(20)
+    for t in ax.xaxis.get_major_ticks(): t.label1.set_fontsize(20)
     ax.xaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.yaxis.get_major_ticks(): t.label.set_fontsize(20)
+    for t in ax.yaxis.get_major_ticks(): t.label1.set_fontsize(20)
     ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.zaxis.get_major_ticks(): t.label.set_fontsize(20)
-    for t in ax.zaxis.get_major_ticks(): t.label.set_horizontalalignment( 'left')
+    for t in ax.zaxis.get_major_ticks(): t.label1.set_fontsize(20)
+    for t in ax.zaxis.get_major_ticks(): t.label1.set_horizontalalignment( 'left')
     ax.zaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
     ax.plot3D(recorded_array[:,0], recorded_array[:,1], recorded_array[:,2], color='red', label='Actual path')
     ax.plot3D(goal_array[:,0], goal_array[:,1], goal_array[:,2], color='grey', label='Ideal path')
     ax.plot3D(goal_array[:,0]+correction_array[:,0], goal_array[:,1]+correction_array[:,1], goal_array[:,2]+correction_array[:,2], color='green', label='Corrected path')
-    plt.legend()
+    ax.legend()
     plt.title('Plot of the motion of the robot')
     plt.show()
     return 0
@@ -274,12 +281,12 @@ def plot_progress_graph(goal_array,set_of_recorded_array,set_of_correction_array
     ax.zaxis.labelpad=35
     ax.set_zlabel('$Z (m)$',fontsize=30)
     ax.zaxis._axinfo['label']
-    for t in ax.xaxis.get_major_ticks(): t.label.set_fontsize(20)
+    for t in ax.xaxis.get_major_ticks(): t.label1.set_fontsize(20)
     ax.xaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.yaxis.get_major_ticks(): t.label.set_fontsize(20)
+    for t in ax.yaxis.get_major_ticks(): t.label1.set_fontsize(20)
     ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.zaxis.get_major_ticks(): t.label.set_fontsize(20)
-    for t in ax.zaxis.get_major_ticks(): t.label.set_horizontalalignment( 'left')
+    for t in ax.zaxis.get_major_ticks(): t.label1.set_fontsize(20)
+    for t in ax.zaxis.get_major_ticks(): t.label1.set_horizontalalignment( 'left')
     ax.zaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
     ax.plot3D(recorded_array[:,0], recorded_array[:,1], recorded_array[:,2], color='red', label='Actual path_1')
     ax.plot3D(goal_array[:,0], goal_array[:,1], goal_array[:,2], color='grey', label='Ideal path')
@@ -452,11 +459,34 @@ def interation(iter_num,traj_file,goal_array_0,kernal_size):
     new_file = generate_corrected_file(traj_file,selected_file,iter_num,goal_array_0,start_point,correction_array)
     return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr
 
-def correction_array_smoothing_function(correction_array,sigma):
-     correction_array[:, 0] = gaussian_filter1d(correction_array[:, 0], sigma)
-     correction_array[:, 1] = gaussian_filter1d(correction_array[:, 1], sigma)
-     correction_array[:, 2] = gaussian_filter1d(correction_array[:, 2], sigma)
-     return correction_array
+def correction_array_smoothing_function(goal_array, correction_array,sigma):
+    #first we need to identify the continuous line segments
+    #to indetify continous lines segemnts we are going to measure the change in angle for three consicutive points
+    #adding this angle and we consider it as a new segments when angle>max_angle
+    max_angle = 15
+    angle = np.zeros(1)
+    segment_start = 0
+    segments = []
+    for i in range (0,np.size(goal_array,0)-3,1):
+        a = np.array([goal_array[i,0], goal_array[i,1],goal_array[i,2]])
+        b = np.array([goal_array[i+1,0], goal_array[i+1,1],goal_array[i,2]])
+        c = np.array([goal_array[i+2,0], goal_array[i+2,1],goal_array[i,2]])
+        f = b-a
+        e = b-c
+        angle_radian = np.dot(f, e) / (np.linalg.norm(f) * np.linalg.norm(e))
+        if not np.isnan(angle_radian):
+            angle = angle+ 180 -np.arccos(angle_radian)*180.0/ np.pi
+        if angle > max_angle:
+            segments.append(np.array([segment_start, i]))
+            segment_start = i
+            angle = 0
+    #now that we have found the segemnts we can do the smoothing for each segment individually.
+    for set in segments:
+        start,end = set
+        correction_array[start:end, 0] = gaussian_filter1d(correction_array[start:end, 0], sigma)
+        correction_array[start:end, 1] = gaussian_filter1d(correction_array[start:end, 1], sigma)
+        correction_array[start:end, 2] = gaussian_filter1d(correction_array[start:end, 2], sigma)
+    return correction_array
 
 
 
