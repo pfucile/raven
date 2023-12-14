@@ -459,7 +459,7 @@ def interation(iter_num,traj_file,goal_array_0,kernal_size):
     new_file = generate_corrected_file(traj_file,selected_file,iter_num,goal_array_0,start_point,correction_array)
     return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr
 
-def correction_array_smoothing_function(goal_array, correction_array,sigma):
+def correction_array_smoothing_function_segment_per_segment(goal_array, correction_array,sigma):
     #first we need to identify the continuous line segments
     #to identify continuous lines segments we are going to measure the change in angle for three consicutive points
     #adding this angle and we consider it as a new segments when angle>max_angle
@@ -486,6 +486,16 @@ def correction_array_smoothing_function(goal_array, correction_array,sigma):
         correction_array[start:end, 0] = gaussian_filter1d(correction_array[start:end, 0], sigma)
         correction_array[start:end, 1] = gaussian_filter1d(correction_array[start:end, 1], sigma)
         correction_array[start:end, 2] = gaussian_filter1d(correction_array[start:end, 2], sigma)
+
+    #correction_array[:, 0] = gaussian_filter1d(correction_array[:, 0], 1)
+    #correction_array[:, 1] = gaussian_filter1d(correction_array[:, 1], 1)
+    #correction_array[:, 2] = gaussian_filter1d(correction_array[:, 2], 1)
+    return correction_array
+
+def correction_array_smoothing_function(goal_array, correction_array,sigma):
+    correction_array[:, 0] = gaussian_filter1d(correction_array[:, 0], 1)
+    correction_array[:, 1] = gaussian_filter1d(correction_array[:, 1], 1)
+    correction_array[:, 2] = gaussian_filter1d(correction_array[:, 2], 1)
     return correction_array
 
 
@@ -500,7 +510,7 @@ set_of_correction_array = []
 fixed_shifts = [0.0,0.0,0.0] #Adjust these numbers if there are constant shift/error in the axis which is always present [x,y,z]
 original_traj_file = select_file("../Documents/","select the original trajectory file")
 original_traj_file_name = os.path.basename(original_traj_file).strip('.txt')
-number_of_iterations = 3
+number_of_iterations = 5
 n=20
 goal_array_0, recorded_array_0,correction_array_0, recorded_array_shifted_0, traj_file,error_arr = interation_one(original_traj_file,n)
 aa = plot_graphs(goal_array_0,recorded_array_0,correction_array_0,recorded_array_shifted_0)
