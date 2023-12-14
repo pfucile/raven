@@ -461,7 +461,7 @@ def interation(iter_num,traj_file,goal_array_0,kernal_size):
 
 def correction_array_smoothing_function(goal_array, correction_array,sigma):
     #first we need to identify the continuous line segments
-    #to indetify continous lines segemnts we are going to measure the change in angle for three consicutive points
+    #to identify continuous lines segments we are going to measure the change in angle for three consicutive points
     #adding this angle and we consider it as a new segments when angle>max_angle
     max_angle = 15
     angle = np.zeros(1)
@@ -480,16 +480,13 @@ def correction_array_smoothing_function(goal_array, correction_array,sigma):
             segments.append(np.array([segment_start, i]))
             segment_start = i
             angle = 0
-    #now that we have found the segemnts we can do the smoothing for each segment individually.
+    #now that we have found the segments we can do the smoothing for each segment individually.
     for set in segments:
         start,end = set
         correction_array[start:end, 0] = gaussian_filter1d(correction_array[start:end, 0], sigma)
         correction_array[start:end, 1] = gaussian_filter1d(correction_array[start:end, 1], sigma)
         correction_array[start:end, 2] = gaussian_filter1d(correction_array[start:end, 2], sigma)
     return correction_array
-
-
-
 
 
 
