@@ -516,7 +516,7 @@ def correction_array_smoothing_function_segment_per_segment(goal_array, correcti
     #correction_array[:, 2] = gaussian_filter1d(correction_array[:, 2], 1)
     return correction_array
 
-def correction_array_smoothing_function(goal_array, correction_array,sigma):
+def correction_array_smoothing_function(correction_array,sigma):
     correction_array[:, 0] = gaussian_filter1d(correction_array[:, 0], sigma)
     correction_array[:, 1] = gaussian_filter1d(correction_array[:, 1], sigma)
     correction_array[:, 2] = gaussian_filter1d(correction_array[:, 2], sigma)
@@ -577,7 +577,7 @@ recorded_array_shifted = allign_in_time(goal_array_0,recorded_array)
 error_arr, index_array, start_point = calculate_error(goal_array_0,recorded_array_shifted)
 #calculating the correction for each axis one point at a time
 correction_array = calculate_correction(goal_array_0, index_array, start_point,error_arr,n)
-correction_array =correction_array_smoothing_function(goal_array,correction_array,1)
+correction_array =correction_array_smoothing_function(correction_array,1)
 set_of_recorded_array.append(recorded_array)
 set_of_error_array.append(error_arr)
 set_of_log_files.append(selected_file)
