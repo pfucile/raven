@@ -2,6 +2,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
+#import matplotlib
+#matplotlib.use('Agg')
 from mpl_toolkits.mplot3d import axes3d, Axes3D
 from scipy.optimize import curve_fit
 from scipy.ndimage import gaussian_filter1d
@@ -16,6 +18,8 @@ import copy
 from cmath import inf
 import numba
 import os
+import time
+from datetime import datetime
 
 
 lock = threading.Lock()
@@ -139,7 +143,7 @@ def allign_in_time(goal_array,recorded_array):
 def compensate_fixed_shifts(recorded_array):
     recorded_array [:, 0] += fixed_shifts[0]
     recorded_array [:, 1] += fixed_shifts[1]
-    recorded_array [:, 2] += fixed_shifts[2] 
+    recorded_array [:, 2] += fixed_shifts[2]
     return recorded_array
 def calculate_error(goal_array,recorded_array_shifted):
     ## now let's calculate the error in each axis assuming the alignment process is successful
@@ -159,8 +163,11 @@ def calculate_error(goal_array,recorded_array_shifted):
         error_z = z_new[i]-recorded_array_shifted[i,2]
         error_arr = np.append(error_arr,[[error_x,error_y,error_z,recorded_array_shifted[i,3]]],axis=0)
 
-
+    #to find the correction value for x,y and z axis of each points in the goal array.
+    # for this we are using a process similar to convolution which multiplies over all the values on
+    # the recorded_shifted array to obtain a single value of each axis per point
     # since the get_indices_of_closest_questioned_points function used numba  we need to install numba using the command "pip install numba"
+
     #finding the index corresponding to each points in goal_array
     start_time = 10.0 #the move to start time used in the raven system
     start_point = get_indices_of_closest_questioned_points(np.array([start_time]), goal_array[:,3])
@@ -247,17 +254,17 @@ def plot_graphs3D(goal_array,recorded_array,correction_array,recorded_array_shif
     ax.zaxis.labelpad=35
     ax.set_zlabel('$Z (m)$',fontsize=30)
     ax.zaxis._axinfo['label']
-    for t in ax.xaxis.get_major_ticks(): t.label1.set_fontsize(20)
+    for t in ax.xaxis.get_major_ticks(): t.label.set_fontsize(20)
     ax.xaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.yaxis.get_major_ticks(): t.label1.set_fontsize(20)
+    for t in ax.yaxis.get_major_ticks(): t.label.set_fontsize(20)
     ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.zaxis.get_major_ticks(): t.label1.set_fontsize(20)
-    for t in ax.zaxis.get_major_ticks(): t.label1.set_horizontalalignment( 'left')
+    for t in ax.zaxis.get_major_ticks(): t.label.set_fontsize(20)
+    for t in ax.zaxis.get_major_ticks(): t.label.set_horizontalalignment( 'left')
     ax.zaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
     ax.plot3D(recorded_array[:,0], recorded_array[:,1], recorded_array[:,2], color='red', label='Actual path')
     ax.plot3D(goal_array[:,0], goal_array[:,1], goal_array[:,2], color='grey', label='Ideal path')
     ax.plot3D(goal_array[:,0]+correction_array[:,0], goal_array[:,1]+correction_array[:,1], goal_array[:,2]+correction_array[:,2], color='green', label='Corrected path')
-    ax.legend()
+    plt.legend()
     plt.title('Plot of the motion of the robot')
     plt.show()
     return 0
@@ -281,12 +288,12 @@ def plot_progress_graph(goal_array,set_of_recorded_array,set_of_correction_array
     ax.zaxis.labelpad=35
     ax.set_zlabel('$Z (m)$',fontsize=30)
     ax.zaxis._axinfo['label']
-    for t in ax.xaxis.get_major_ticks(): t.label1.set_fontsize(20)
+    for t in ax.xaxis.get_major_ticks(): t.label.set_fontsize(20)
     ax.xaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.yaxis.get_major_ticks(): t.label1.set_fontsize(20)
+    for t in ax.yaxis.get_major_ticks(): t.label.set_fontsize(20)
     ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-    for t in ax.zaxis.get_major_ticks(): t.label1.set_fontsize(20)
-    for t in ax.zaxis.get_major_ticks(): t.label1.set_horizontalalignment( 'left')
+    for t in ax.zaxis.get_major_ticks(): t.label.set_fontsize(20)
+    for t in ax.zaxis.get_major_ticks(): t.label.set_horizontalalignment( 'left')
     ax.zaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
     ax.plot3D(recorded_array[:,0], recorded_array[:,1], recorded_array[:,2], color='red', label='Actual path_1')
     ax.plot3D(goal_array[:,0], goal_array[:,1], goal_array[:,2], color='grey', label='Ideal path')
@@ -359,7 +366,24 @@ def plot_progress_graph(goal_array,set_of_recorded_array,set_of_correction_array
 
     return 0
 
-
+#function for automatically logging the errors as a log file
+def log_error_as_file(set_of_error_array,original_traj_file_for_later,set_of_log_files):
+    dirname =  processed_file_loaction
+    #getting the time at the moment for file naming
+    Time_stamp= datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+    # convert datetime obj to string
+    str_time_stamp = str(Time_stamp)
+    #setting the file name for saving the errors as a single file
+    error_file_name = dirname+original_traj_file_for_later+"_processed_on_"+str_time_stamp+"_Errors_for_"+str(number_of_iterations)+"_iterations.txt"
+    print(error_file_name)
+    error_file = open(error_file_name, 'w')
+    for i in range (0,len(set_of_error_array),1):
+        error_array = set_of_error_array[i]
+        error_file.write("error for interation "+str(i)+" processed with logfile "+set_of_log_files[i]+ "\n")
+        error_file.write("x_error(m) y_error(m) z_error(m) time(s)"+ "\n")
+        for j in range (0,len(error_array[:,3]),1):
+            error_file.write(str(error_array[j,0])+" "+str(error_array[j,1])+" "+str(error_array[j,2])+" "+str(error_array[j,3])+ "\n")
+    error_file.close()
 
 def plot_resultant_error(goal_array,set_of_recorded_array,set_of_correction_array,set_of_error_array):
     for i in range (0,len(set_of_error_array),1):
@@ -385,7 +409,7 @@ def generate_corrected_file(original_traj_file,selected_file,iter_num,goal_array
     print (original_traj_file)
     lines = file.readlines()  # Read all lines before processing
     log_file_name =  os.path.basename(selected_file).strip('.txt')
-    dirname =  "../Documents/"
+    dirname =  processed_file_loaction
     corrected_file = dirname+original_traj_file_name+"_processed_with_"+ log_file_name +"_iteration_num_"+str(iter_num)+".txt"
     corrected_traj_file = open(corrected_file, 'w')
     line_num = -1
@@ -428,7 +452,7 @@ def generate_corrected_file(original_traj_file,selected_file,iter_num,goal_array
     return corrected_file
 
 def interation_one(original_traj_file,kernal_size):
-    selected_file = select_file("../Documents/","select the log file for this trajectory- Iteration number "+str(0))
+    selected_file = select_file(log_file_location,"select the log file for this trajectory- Iteration number "+str(0))
     goal_array, recorded_array, TBP_total = convert_to_np_array(selected_file)
     #to compensate for the inherent shift in the system
     recorded_array = compensate_fixed_shifts(recorded_array)
@@ -438,13 +462,13 @@ def interation_one(original_traj_file,kernal_size):
     error_arr, index_array, start_point = calculate_error(goal_array,recorded_array_shifted)
     #calculating the correction for each axis one point at a time
     correction_array = calculate_correction(goal_array, index_array, start_point,error_arr,kernal_size)
-    correction_array =correction_array_smoothing_function(correction_array,3)
+    correction_array =correction_array_smoothing_function(goal_array,correction_array,3)
     #plot the graphs
     new_file = generate_corrected_file(original_traj_file,selected_file,0,goal_array,start_point,correction_array)
-    return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr
+    return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr,selected_file
 
 def interation(iter_num,traj_file,goal_array_0,kernal_size):
-    selected_file = select_file("../Documents/","select the log file for this trajectory- Iteration number "+str(iter_num))
+    selected_file = select_file(log_file_location,"select the log file for this trajectory- Iteration number "+str(iter_num))
     goal_array, recorded_array, TBP_total = convert_to_np_array(selected_file)
     #to compensate for the inherent shift in the system
     recorded_array = compensate_fixed_shifts(recorded_array)
@@ -454,10 +478,10 @@ def interation(iter_num,traj_file,goal_array_0,kernal_size):
     error_arr, index_array, start_point = calculate_error(goal_array_0,recorded_array_shifted)
     #calculating the correction for each axis one point at a time
     correction_array = calculate_correction(goal_array_0, index_array, start_point,error_arr,kernal_size)
-    correction_array =correction_array_smoothing_function(correction_array,3)
+    correction_array =correction_array_smoothing_function(goal_array,correction_array,3)
     #plot the graphs
     new_file = generate_corrected_file(traj_file,selected_file,iter_num,goal_array_0,start_point,correction_array)
-    return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr
+    return goal_array,recorded_array,correction_array,recorded_array_shifted, new_file,error_arr,selected_file
 
 def correction_array_smoothing_function_segment_per_segment(goal_array, correction_array,sigma):
     #first we need to identify the continuous line segments
@@ -502,35 +526,48 @@ def correction_array_smoothing_function(goal_array, correction_array,sigma):
 
 
 
+
+
+
 ## actual code
+
+plotting_control = True
+
+log_file_location = "../Documents/"
+traject_file_loaction = "../Documents/"
+processed_file_loaction = "../Documents/"
 set_of_recorded_array = []
 set_of_error_array = []
 set_of_correction_array = []
+set_of_log_files = []
 #to compensate for the inherent shift in the system
 fixed_shifts = [0.0,0.0,0.0] #Adjust these numbers if there are constant shift/error in the axis which is always present [x,y,z]
-original_traj_file = select_file("../Documents/","select the original trajectory file")
+original_traj_file = select_file(traject_file_loaction,"select the original trajectory file")
 original_traj_file_name = os.path.basename(original_traj_file).strip('.txt')
+original_traj_file_for_later = original_traj_file_name
 number_of_iterations = 5
 n=20
-goal_array_0, recorded_array_0,correction_array_0, recorded_array_shifted_0, traj_file,error_arr = interation_one(original_traj_file,n)
+goal_array_0, recorded_array_0,correction_array_0, recorded_array_shifted_0, traj_file,error_arr,selected_file_0 = interation_one(original_traj_file,n)
 aa = plot_graphs(goal_array_0,recorded_array_0,correction_array_0,recorded_array_shifted_0)
 aa= plot_graphs3D(goal_array_0,recorded_array_0,correction_array_0,recorded_array_shifted_0)
 set_of_recorded_array.append(recorded_array_0)
 set_of_error_array.append(error_arr)
 set_of_correction_array.append(correction_array_0)
+set_of_log_files.append(selected_file_0)
 for i in range ( number_of_iterations-1):
     n = n-1
     print("n = ", n)
-    goal_array,recorded_array,correction_array,recorded_array_shifted,traj_file,error_arr = interation(i+1,traj_file,goal_array_0,n)
+    goal_array,recorded_array,correction_array,recorded_array_shifted,traj_file,error_arr,selected_file_iter = interation(i+1,traj_file,goal_array_0,n)
     aa= plot_graphs(goal_array_0,recorded_array,correction_array,recorded_array_shifted)
     aa =plot_graphs3D(goal_array_0,recorded_array,correction_array,recorded_array_shifted)
     #plot_graphs(goal_array,recorded_array,correction_array,recorded_array_shifted)
     set_of_recorded_array.append(recorded_array)
     set_of_error_array.append(error_arr)
     set_of_correction_array.append(correction_array)
+    set_of_log_files.append(selected_file_iter)
 
 
-selected_file = select_file("../Documents/","select the log file for this trajectory- Iteration number "+str(number_of_iterations+1))
+selected_file = select_file(log_file_location,"select the log file for this trajectory- Iteration number "+str(number_of_iterations))
 goal_array, recorded_array, TBP_total = convert_to_np_array(selected_file)
 #to compensate for the inherent shift in the system
 recorded_array = compensate_fixed_shifts(recorded_array)
@@ -540,9 +577,14 @@ recorded_array_shifted = allign_in_time(goal_array_0,recorded_array)
 error_arr, index_array, start_point = calculate_error(goal_array_0,recorded_array_shifted)
 #calculating the correction for each axis one point at a time
 correction_array = calculate_correction(goal_array_0, index_array, start_point,error_arr,n)
-correction_array =correction_array_smoothing_function(correction_array,3)
+correction_array =correction_array_smoothing_function(goal_array,correction_array,3)
 set_of_recorded_array.append(recorded_array)
 set_of_error_array.append(error_arr)
+set_of_log_files.append(selected_file)
 #plotting all the trajectories together
 plot_progress_graph(goal_array_0,set_of_recorded_array,set_of_correction_array,set_of_error_array)
+
 plot_resultant_error(goal_array_0,set_of_recorded_array,set_of_correction_array,set_of_error_array)
+log_error_as_file(set_of_error_array,original_traj_file_for_later,set_of_log_files)
+print("done")
+
