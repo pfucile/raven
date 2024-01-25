@@ -530,9 +530,9 @@ def correction_array_smoothing_function(correction_array,sigma):
 
 
 ## actual code
-
+#to control the plotting functions ( to be developed)
 plotting_control = True
-
+#change the file locations here for easy access through the dialogue boxes
 log_file_location = "../Documents/"
 traject_file_loaction = "../Documents/"
 processed_file_loaction = "../Documents/"
