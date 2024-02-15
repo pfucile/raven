@@ -86,12 +86,14 @@ bool initialize_extruder(float print_temp);
 
 //the gcode file
 std::string path_to_file = "../xarm_ws/src/raven/scripts/Converted_file.txt";
-const std::string PLANNING_GROUP = "xarm7"; // Attribution of planning group variable
+
 std::string follow_joint_trajectory_action = "/xarm/xarm7_traj_controller/follow_joint_trajectory";
-// definition of the robot variables.
-const std::string robot_description = "robot_description";
+
 // Defining again right arm group, because move_group_interface from
 // MoveIt and Descartes need different initialization types
+// definition of the robot variables.
+const std::string robot_description = "robot_description";
+const std::string PLANNING_GROUP = "xarm7"; // Attribution of planning group variable
 const std::string world_frame = "link_base";
 const std::string tcp_frame = "link7";
 
@@ -184,7 +186,7 @@ int main(int argc, char** argv) {
     // First, we retrieve the joint names
     std::vector <std::string> names;
     names = joint_model_group->getVariableNames();
-    
+
     trajectory_msgs::JointTrajectory init_joint_solution;
     // here we are putting the joint names in the init_joint_solution class variable
     init_joint_solution.joint_names = names;
@@ -306,22 +308,31 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
             GcodeArray[2][2] = 0.005*time_mov_to_start ;
 
             geometry_msgs::PoseStamped current_pose = move_group_interface.getCurrentPose ();
-            float  distance = current_pose.pose.position.z - (myArray[i - seq_element_num][4]+ori_adj_z);
+            float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
+            float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
+            float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
+
             descartes_core::TrajectoryPtPtr pt ;
-            int number_of_points =   distance*1000*1;
+            int number_of_points =   distance_z*1000*8;
             float t = 0;
             float Rot_x = M_PI;
             float Rot_y = 0;
-            float delta_Rot_x = (myArray[i - seq_element_num][6] - Rot_x)/number_of_points ;
-            float delta_Rot_y = (myArray[i - seq_element_num][7] - Rot_y)/number_of_points ;
-            float radius = 0.06;
+            float delta_Rot_x = (myArray[i - seq_element_num ][6] - Rot_x)/number_of_points ;
+            float delta_Rot_y = (myArray[i - seq_element_num ][7] - Rot_y)/number_of_points ;
+            float radius = 0.05;
+            float X_pos = 0.0;
+            float Y_pos = 0.0;
+            float Z_pos = 0.0;
+
+
+            std::cout<<"Segemnt number  =  "<<prev_seg_num<<std::endl;
             for (int k=0; k<number_of_points;k++)
             {
                 pose = Eigen::Isometry3d::Identity();
                 float time_to_point = time_mov_to_start / number_of_points;
-                float X_pos = current_pose.pose.position.x + (radius * cos(t)) - radius;
-                float Y_pos = current_pose.pose.position.y + (radius * sin(t));
-                float Z_pos = current_pose.pose.position.z - ((distance/(2*M_PI)) * t);
+                float X_pos = current_pose.pose.position.x + (radius * cos(t)) - radius - (((distance_x)/(2*M_PI)) * t);
+                float Y_pos = current_pose.pose.position.y + (radius * sin(t))- (((distance_y)/(2*M_PI)) * t);
+                float Z_pos = current_pose.pose.position.z - ((distance_z/(2*M_PI)) * t);
                 Rot_x = Rot_x + delta_Rot_x;
                 Rot_y = Rot_y + delta_Rot_y;
                 t = t + (2 * M_PI / number_of_points);
@@ -335,6 +346,7 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
                 publishGoal(myArray[i - seq_element_num][6], myArray[i - seq_element_num][7],
                             myArray[i - seq_element_num][8], time_to_point, X_pos , Y_pos ,
                             Z_pos);
+
             }
             for (int j = 0; j <seq_element_num; j++)
             {
@@ -354,7 +366,7 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
 
 
                 /*
-               
+
                 //to be used with Gcodes that do not have extrusion values.
                 time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000)/print_velocity ;
                 //to be used with Gcodes that do not have extrusion values.
