@@ -6,7 +6,7 @@
 
 
 
-std::vector<std::vector<int>> find_segments(float** myArray); // Initialization of the function to find the relevant segments
+std::vector<std::vector<int>> segmentation_array = find_segments(myArray);// Initialization of the function to find the relevant segments
 
 
 std::vector<std::vector<int>> find_segments(float** myArray) {
@@ -17,25 +17,24 @@ std::vector<std::vector<int>> find_segments(float** myArray) {
     float E_str_float = 0.0;
     float prev_seg_num = myArray[0][9];
     std::vector <std::vector<int>> segmentation_array; //to store the start point and the end point of the segment
-
-    for (int i = 1; i < *count - 1; i++) {
-        if (myArray[i][9] == prev_seg_num and seq_element_num <= 10000 and i < (*count)) {
-            seq_element_num = seq_element_num++;
+    for (int i = 0; i < *count-1; i++) {
+        if (myArray[i][9] == prev_seg_num and seq_element_num <= 10000 and i < (*count-2)) {
+            seq_element_num == seq_element_num++;
             E = myArray[i][5] - E_previous;
             E_subtotal = E_subtotal + E;
             E_previous = myArray[i][5];
             prev_seg_num = myArray[i][9];
-        } else if (myArray[i][9] != prev_seg_num or seq_element_num > 10000 or i == (*count)) {
+        }
+        else if (myArray[i][9] != prev_seg_num or seq_element_num > 10000 or i == (*count-2)) {
             std::vector<int> newRow;
             newRow.push_back(i - seq_element_num);
             newRow.push_back(i - 1);
             segmentation_array.push_back(newRow);
-            seq_element_num = 0;
+            seq_element_num = 1;
             E_subtotal = 0;
             E = myArray[i][5] - E_previous;
             E_subtotal = E_subtotal + E;
             E_previous = myArray[i][5];
-            G = myArray[i][0];
             prev_seg_num = myArray[i][9];
         }
 
