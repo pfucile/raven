@@ -47,7 +47,7 @@ float nozzle_diameter = 0.4; //mm
 float layer_height = 0.3; //mm
 float extrusion_multiplier = 0.6; //mm
 float filament_diameter = 1.75; //mm
-float starting_point[] = {0.35, 0.25, 0.15}; //give the desired initial starting pose here!!
+float starting_point[] = {0.45, 0.065, 0.1133}; //give the desired initial starting pose here!!
 float move_down_value = 0.0825;  //adjust this number if the extruder is too close or too far from the print bed
 float time_mov_to_start = 10 ; //time taken to move from the waiting point to the first point on the segment
 float time_to_go_back = 5.0;   //time taken to move away after print
@@ -56,9 +56,7 @@ double time_between_points = 0.15;
 
 int* count;
 const double default_joint_vel = 0.05; // Define the default speed in rad/s. We define this if the time between points is not provide
-float ori_adj_x ;
-float ori_adj_y ;
-float ori_adj_z ;
+
 
 // Create an object from the Serial class for the extruder
 serial::Serial ser;
@@ -78,7 +76,6 @@ ros::Publisher print_stat;
 //Initialization of different functions
 std::vector<float>  Calculate_origin_adjustment(float move_down_value , float** myarray); //Initialization of the function to calculate the correction value to set the origin of the print to the designated point
 int Write_Gcode_to_Array(std::string path_to_file,float** myarray);//Initialization of the function to load the gcode to a array for the functions to use
-bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float ori_adj_z); //Initialization of the function to execute the actual Gcode
 ; //Initialization of the function to inlude the extruder nad table to environment
 bool attach_collision_objects(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name,std::string Frame );
 bool include_collision_objects_to_env(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name );
@@ -142,12 +139,19 @@ private:
     int rows;
     int cols;
     float print_velocity;
+    std::vector<descartes_core::TrajectoryPtPtr> plan_result;
+    descartes_planner::DensePlanner* planner;
+    //descartes_core::RobotModelPtr model;
+    //calculating the value for adjusting the starting point of print to the zero position that we have designated
+    float ori_adj_x ;
+    float ori_adj_y ;
+    float ori_adj_z ;
 
 public:
     // Constructor
     segment_wise_printer_class(const std::string& planning_group_name) :
             move_group_interface(planning_group_name),
-            planning_scene_interface(), // Optionally, initialize any other members here
+            planning_scene_interface(),
             joint_model_group(move_group_interface.getCurrentState()->getJointModelGroup(planning_group_name)),
             myArray(nullptr), // Initialize myarray pointer to nullptr
             rows(0),
@@ -173,20 +177,29 @@ public:
         }
     }
     void get_current_joint_position() {
+        //calculating the value for adjusting the starting point of print to the zero position that we have designated
+        std::vector<float>  ori_adj = Calculate_origin_adjustment(move_down_value,myArray);
+        ori_adj_x =  ori_adj[0];
+        ori_adj_y =  ori_adj[1];
+        ori_adj_z =  ori_adj[2];
         moveit::core::RobotStatePtr current_state_ss = move_group_interface.getCurrentState();
         current_state_ss->copyJointGroupPositions(joint_model_group, joint_group_positions_ss);
-        std::vector<double> joint_pose = {joint_group_positions_ss[0], joint_group_positions_ss[1], joint_group_positions_ss[2], joint_group_positions_ss[3],joint_group_positions_ss[4], joint_group_positions_ss[5],joint_group_positions_ss[6]};
+        joint_pose = {joint_group_positions_ss[0], joint_group_positions_ss[1], joint_group_positions_ss[2], joint_group_positions_ss[3],joint_group_positions_ss[4], joint_group_positions_ss[5],joint_group_positions_ss[6]};
         current_pose = move_group_interface.getCurrentPose ();
     }
     void get_start_and_stop(const std::vector<int>& input){
         seq_element_num = 1+input[1]-input[0];
         i = 1+input[1];
+
     }
     void spiral_move_down(){
-        Eigen::Isometry3d pattern_origin = Eigen::Isometry3d::Identity();
+        pattern_origin = Eigen::Isometry3d::Identity();
         pattern_origin.translation() = Eigen::Vector3d(0.0,0.0,0.0);
+
+
+        //to add the current pose into the trajectoery
         result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(joint_pose) ));
-        Eigen::Isometry3d pose = Eigen::Isometry3d::Identity();
+        pose = Eigen::Isometry3d::Identity();
 
         GcodeArray[0][0] = 1000 ;
         GcodeArray[0][1] = 0.7 ; //preflow
@@ -201,7 +214,7 @@ public:
         float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
         float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
         float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
-        int number_of_points =   distance_z*1000*8;
+        int number_of_points =  distance_z*1000*8;
         float t = 0;
         float Rot_x = M_PI;
         float Rot_y = 0;
@@ -239,14 +252,12 @@ public:
 
         for (int j = 1; j <seq_element_num; j++)
         {
-            Eigen::Isometry3d pose = Eigen::Isometry3d::Identity();
+            pose = Eigen::Isometry3d::Identity();
 
             pose.translation() = Eigen::Vector3d(myArray[i-seq_element_num+j][2]+ori_adj_x, myArray[i-seq_element_num+j][3]+ori_adj_y, myArray[i-seq_element_num+j][4]+ori_adj_z);
-            ROS_INFO(" error debugging ! - 1");
             // to orient the robot end-effector along the direction as given in the Gcode
             pose *= Eigen::AngleAxisd(myArray[i-seq_element_num+j][6], Eigen::Vector3d::UnitX())*Eigen::AngleAxisd(myArray[i-seq_element_num+j][7], Eigen::Vector3d::UnitY());
 
-            ROS_INFO(" error debugging ! -2 ");
             if (myArray[i-seq_element_num+j][1] <= max_print_speed)
             {
                 print_velocity = (myArray[i-seq_element_num+j][1]*1000)/60; // converting from m/min to mm/s
@@ -278,19 +289,14 @@ public:
 
 
             //For Gcodes with Evalue
-            ROS_INFO(" error debugging ! -3 ");
             time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000)/print_velocity ;
-            ROS_INFO(" error debugging ! -4 ");
             GcodeArray[j+3][0] =  (60 *(myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5] ))/ time_between_points ; //calculating the material feed rate in mm/minutes for the extruder
-            ROS_INFO(" error debugging ! -5 ");
             GcodeArray[j+3][1] =  myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5] ; //for gcodes with Evalue
-            ROS_INFO(" error debugging ! -6 ");
             GcodeArray[j+3][2] =  time_between_points ;
-            ROS_INFO(" error debugging ! -7 ");
 
 
             // This creates a trajectory that searches around the tool Z and let's the robot move in that null space
-            descartes_core::TrajectoryPtPtr pt = makeTolerancedCartesianPoint(pattern_origin * pose, time_between_points);
+            pt = makeTolerancedCartesianPoint(pattern_origin * pose, time_between_points);
             // This creates a trajectory that is rigid. The tool cannot float and must be at exactly this point.
             //descartes_core::TrajectoryPtPtr pt = makeCartesianPoint(pattern_origin * pose, time_between_points);
             result.push_back(pt);
@@ -304,7 +310,7 @@ public:
         pose.translation() = Eigen::Vector3d(myArray[i-1][2]+ori_adj_x,myArray[i-1][3]+ori_adj_y,myArray[i-1][4]+ori_adj_z+.1 );
         pose *= Eigen::AngleAxisd(3.14, Eigen::Vector3d::UnitX()) ;// this flips the tool around so that Z is down
         //pose *= Eigen::AngleAxisd(myArray[i][6], Eigen::Vector3d::UnitX())*Eigen::AngleAxisd(myArray[i][7], Eigen::Vector3d::UnitY());
-        //pt = makeCartesianPoint(pattern_origin * pose, 5.0);
+        pt = makeCartesianPoint(pattern_origin * pose, 5.0);
         pt = makeTolerancedCartesianPoint(pattern_origin * pose,time_to_go_back);
 
         GcodeArray[seq_element_num+3][0] = 4000 ;
@@ -317,27 +323,51 @@ public:
         publishGoal(myArray[i-1][6],myArray[i-1][7],myArray[i-1][8],time_to_go_back,myArray[i-1][2]+ori_adj_x,myArray[i-1][3]+ori_adj_y,myArray[i-1][4]+ori_adj_z+.05);
 
     }
-
+    void init_point(){
+        result = makePath_init();
+    }
     void path_planner() {
+        if (result.empty()) {
+            std::cout << "Result is empty inside planner" << std::endl;
+        } else {
+            std::cout << "Result is not empty inside planner" << std::endl;
+        }
+        descartes_core::RobotModelPtr model(new descartes_moveit::IkFastMoveitStateAdapter());
+        // Initialize the robot model for descartes
+        if (!model->initialize(robot_description, PLANNING_GROUP, world_frame, tcp_frame)) {
+            ROS_INFO_NAMED("error", "Unable to initialize robot model");
+        }
+
+        model->setCheckCollisions(true); // Turns on collision checking.
+        //creating the instance of the planner
+        planner = new descartes_planner::DensePlanner;
+
+        // Planner initialization
+        if (!planner->initialize(model)) {
+            ROS_INFO_NAMED("error","Failed to initialize planner");
+        }
+
+
         //now lets make the plan by passing the trajectory to the planner
         if (!planner->planPath(result))
         {
             ROS_ERROR("Could not solve for a valid path");
         }
+
         // now we have to extract the calculated path
-        std::vector<descartes_core::TrajectoryPtPtr> plan_result;
         if (!planner->getPath(plan_result))
         {
             ROS_ERROR("Could not retrieve path");
         }
+
         // 5. Translate the result into something that you can execute. In ROS land, this means that we turn the result into
         // a trajectory_msgs::JointTrajectory
         std::vector <std::string> names;
         names = joint_model_group->getVariableNames();
 
         // Create a JointTrajectory
-        trajectory_msgs::JointTrajectory joint_solution;
         joint_solution.joint_names = names;
+
         // Define a default velocity. Descartes points without specified timing will use this value to limit the
         // fastest moving joint. This usually effects the first point in your path the most.
         if (!descartes_utilities::toRosJointPoints(*model, plan_result, default_joint_vel, joint_solution.points))
@@ -349,12 +379,15 @@ public:
         print_stat_msg.data= "trajectory calculation done";
         print_stat.publish(print_stat_msg);
         std::cout<< "trajectory calculation done"<<std::endl;
+        result.clear();
     }
     void print(){
         auto f = std::async(std::launch::async, sendGcode ,seq_element_num );
         if (!executeTrajectory(joint_solution , follow_joint_trajectory_action)) {
             ROS_ERROR("Could not execute trajectory!");
+
         }
+        std::cout<< "printing of segment done"<<std::endl;
     }
 };
 
@@ -389,69 +422,7 @@ int main(int argc, char** argv) {
         ROS_INFO_NAMED("error","Could not add objects to moveit!");
         return -2;
     }
-    // Environment variables (extruder block)
-    //if (!attach_collision_objects(0.037,0.0,0.073,1.0,0.154,0.080,0.107,"extruder","right_hand")) {
-    //    ROS_INFO_NAMED("error","Could not add objects to moveit!");
-    //    return -3;
-    //}
 
-    // Initialize the robot model for descartes
-    if (!model->initialize(robot_description, PLANNING_GROUP, world_frame, tcp_frame)) {
-        ROS_INFO_NAMED("error", "Unable to initialize robot model");
-        return -4;
-    }
-
-    model->setCheckCollisions(true); // Turns on collision checking.
-    // using the function makePath_init() to create the path to the waiting point
-    std::vector <descartes_core::TrajectoryPtPtr> init_points = makePath_init();
-    //creating the instance of the planner
-    planner = new descartes_planner::DensePlanner;
-
-    // Planner initialization
-    if (!planner->initialize(model)) {
-        ROS_INFO_NAMED("error","Failed to initialize planner");
-        return -5;
-    }
-    // planPath(). This function takes your input trajectory and expands it into
-    // a large kinematic "graph". Failures at this point indicate that the
-    // input path may not have solutions at a given point (because of reach/collision)
-    // or has two points with no way to connect them.
-
-    if (!planner->planPath(init_points)) {
-        ROS_INFO_NAMED("error","Could not solve for a valid path");
-        return -6;
-    }
-
-    // getPath looks for the minimum cost (best) trajectory resulting
-    // from the planPath of the previous step.
-
-    std::vector <descartes_core::TrajectoryPtPtr> init_result;
-    if (!planner->getPath(init_result)) {
-        ROS_INFO_NAMED("error","Could not retrieve path");
-        return -7;
-    }
-    // Translate the trajectory into an executable one for ROS interfaces. We are using
-    // standard ROS ones --> trajectory_msgs and control_msgs for the actual execution
-
-    // First, we retrieve the joint names
-    std::vector <std::string> names;
-    names = joint_model_group->getVariableNames();
-
-    trajectory_msgs::JointTrajectory init_joint_solution;
-    // here we are putting the joint names in the init_joint_solution class variable
-    init_joint_solution.joint_names = names;
-
-    if (!descartes_utilities::toRosJointPoints(*model, init_result, default_joint_vel, init_joint_solution.points)) {
-        ROS_INFO_NAMED("error","Unable to convert Descartes trajectory to joint points");
-        return -8;
-    }
-
-    // We send the trajectory to ROS
-    if (!executeTrajectory(init_joint_solution,follow_joint_trajectory_action)) {
-        ROS_INFO_NAMED("error","Could not execute trajectory!");
-        return -9;
-    }
-    sleep(2.0);
 
     // Gcode reading
     count  = new int;
@@ -474,11 +445,7 @@ int main(int argc, char** argv) {
     std_msgs::String print_stat_msg;
     print_stat_msg.data= "start";
     print_stat.publish(print_stat_msg);
-    //calculating the value for adjusting the starting point of print to the zero position that we have designated
-    std::vector<float>  ori_adj = Calculate_origin_adjustment(move_down_value,Original_gcode_array);
-    float ori_adj_x =  ori_adj[0];
-    float ori_adj_y =  ori_adj[1];
-    float ori_adj_z =  ori_adj[2];
+
 
 
 
@@ -489,6 +456,10 @@ int main(int argc, char** argv) {
 
 
     std::vector<std::vector<int>> segmentation_array = find_segments(Original_gcode_array);
+    obj.init_point();
+    obj.path_planner();
+    obj.print();
+
 
     for (const auto& SEGMENT : segmentation_array){
         obj.get_current_joint_position();
