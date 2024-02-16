@@ -311,21 +311,14 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
             float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
             float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
             float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
-
-            descartes_core::TrajectoryPtPtr pt ;
-            int number_of_points =   distance_z*1000*8;
+            int number_of_points =   distance_z*1000*1;
             float t = 0;
             float Rot_x = M_PI;
             float Rot_y = 0;
             float delta_Rot_x = (myArray[i - seq_element_num ][6] - Rot_x)/number_of_points ;
             float delta_Rot_y = (myArray[i - seq_element_num ][7] - Rot_y)/number_of_points ;
             float radius = 0.05;
-            float X_pos = 0.0;
-            float Y_pos = 0.0;
-            float Z_pos = 0.0;
 
-
-            std::cout<<"Segemnt number  =  "<<prev_seg_num<<std::endl;
             for (int k=0; k<number_of_points;k++)
             {
                 pose = Eigen::Isometry3d::Identity();
@@ -337,17 +330,14 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
                 Rot_y = Rot_y + delta_Rot_y;
                 t = t + (2 * M_PI / number_of_points);
                 pose.translation() = Eigen::Vector3d(X_pos , Y_pos , Z_pos );
-                pose *= Eigen::AngleAxisd(Rot_x, Eigen::Vector3d::UnitX()) *
-                        Eigen::AngleAxisd(Rot_y,
-                                          Eigen::Vector3d::UnitY()); // this flips the tool around so that Z is down
+                pose *= Eigen::AngleAxisd(Rot_x, Eigen::Vector3d::UnitX()) *Eigen::AngleAxisd(Rot_y,Eigen::Vector3d::UnitY()); // this flips the tool around so that Z is down
                 //descartes_core::TrajectoryPtPtr pt = makeCartesianPoint(pattern_origin * pose, time_to_point);
                 pt = makeTolerancedCartesianPoint(pattern_origin * pose, time_to_point);
                 result.push_back(pt);
-                publishGoal(myArray[i - seq_element_num][6], myArray[i - seq_element_num][7],
-                            myArray[i - seq_element_num][8], time_to_point, X_pos , Y_pos ,
-                            Z_pos);
+                publishGoal(myArray[i - seq_element_num][6], myArray[i - seq_element_num][7],myArray[i - seq_element_num][8], time_to_point, X_pos , Y_pos ,Z_pos);
 
             }
+
             for (int j = 0; j <seq_element_num; j++)
             {
                 Eigen::Isometry3d pose = Eigen::Isometry3d::Identity();
