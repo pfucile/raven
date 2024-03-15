@@ -112,7 +112,7 @@ make install
 ```
 Now we need to clone the TCP calibration package into the src folder of our ROS workspace.
 ```
-cd ~/ws_mveit/src
+cd ~/ws_moveit/src
 git clone https://github.com/vivekcdavid/tool_point_calibration.git
 cd ..
 source devel/setup.bash
