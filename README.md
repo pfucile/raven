@@ -98,11 +98,10 @@ sudo apt-get install libsuitesparse-dev
 Now we need to clone the ceres-solve package and make.
 ```
 cd ~
-wget http://ceres-solver.org/ceres-solver-2.1.0.tar.gz
-tar zxf ceres-solver-2.1.0.tar.gz
+git clone -b 1.14.x https://github.com/ceres-solver/ceres-solver.git
 mkdir ceres-bin
 cd ceres-bin
-cmake ../ceres-solver-2.1.0
+cmake ../ceres-solver
 make -j3
 make test
 # Optionally install Ceres, it can also be exported using CMake which
