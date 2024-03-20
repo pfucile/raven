@@ -117,7 +117,7 @@ cd ..
 source devel/setup.bash
 catkin_make
 ```
-Now follow the instructions from the [TCP Calibration package website](https://github.com/Jmeyer1292/tool_point_calibration) to do the calibration. Using the results edit the URDF to make the tip of the extruder coincide with the Extruder_tip frame, this is very important because the printing process relies on the fact that the TCP is at the tip of the extruder. 
+Now follow the instructions from the [TCP Calibration package website](https://github.com/Jmeyer1292/tool_point_calibration) to do the calibration. Using the results edit the URDF to make the tip of the extruder coincide with the Extruder_tip frame, this is very important because the printing process relies on the fact that the TCP is at the tip of the extruder. After calibrating the TCP and editing the URDF you should regenerate the moveit_config files using the Moveit setup assistant. 
 
 ### Create the ikfast-plugin for your robot
 To generate IKFast plugin, follow the instructions in the following tutorial from ["Moveit"](https://ros-planning.github.io/moveit_tutorials/doc/ikfast/ikfast_tutorial.html). This method relies on a docker container for [Openrave](http://openrave.org/) which makes it straightforward to create the plugin. But if you are interested ins understanding the exact process follow the tutorial for [Moveit Indigo](http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html) or [Moveit Hydro](http://docs.ros.org/en/hydro/api/moveit_ikfast/html/doc/ikfast_tutorial.html) or [this tutorial](https://choreo.readthedocs.io/en/latest/doc/ikfast_tutorial.html), which explains the process clearly.
