@@ -41,6 +41,9 @@
 #include <tf2_eigen/tf2_eigen.h>
 #include <moveit/robot_state/robot_state.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <moveit/robot_state/conversions.h>
+
 
 
 
@@ -68,6 +71,7 @@ extern EigenSTL::vector_Isometry3d pattern_poses;
 extern descartes_planner::DensePlanner* planner;
 extern ros::Publisher goal_pub;
 extern ros::Publisher print_stat;
+extern ros::Publisher trajectory_pub;
 
 
 
@@ -116,15 +120,18 @@ public:
     void setArray(float** arr, int r, int c);  // member functions
     void intialize_for_printing();
     void get_current_joint_position();
-    void get_start_and_stop(const std::vector<int>& input);
+    void set_start_and_stop(const std::vector<int>& input);
     void spiral_move_down(float time_to_start);
     void direct_move_to_point(float time_to_start);
-    std::vector<std::vector<float>> processSegment(std::string starting_style,std::string ending_style);
+    std::vector<std::vector<float>> processSegment(std::string starting_style,std::string ending_style, float retract_distance);
     std::vector<std::vector<float>> init_point();
     trajectory_msgs::JointTrajectory path_planner();
     void print(trajectory_msgs::JointTrajectory joint_solution_to_print , std::vector<std::vector<float>> Gcode_array_of_segment);
     void update_starting_joint_pose(trajectory_msgs::JointTrajectory& joint_solution_to_print);
-
+    std::vector<std::vector<float>> Go_to_joint_pose(std::vector<double> target_joint_pose,double time_in_seconds);
+    std::vector<std::vector<float>> Go_to_cartesian_pose(std::vector<double> target_pose, double time_in_seconds);
+    std::vector<double> find_pose_forward_kinematics(std::vector<double> joint_pose);
+    
 
 };
 
@@ -137,7 +144,7 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
 bool include_objects_to_env();
 bool executeTrajectory(const trajectory_msgs::JointTrajectory& trajectory);
 int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print );
-std::vector<descartes_core::TrajectoryPtPtr> makePath_init();
+std::vector<descartes_core::TrajectoryPtPtr> go_to_point(std::vector<double>, double time_to_point);
 int publishGoal(float Rx,float Ry,float Rz,float TBP,float Px,float Py,float Pz );
 int Calculate_file_length(std::string path_to_file);
 int Write_Gcode_to_Array(std::string path_to_file);
@@ -150,6 +157,9 @@ bool executeTrajectory(const trajectory_msgs::JointTrajectory& trajectory, std::
 bool attach_collision_objects(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name,std::string Frame );
 bool include_collision_objects_to_env(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name );
 std::vector<std::vector<int>> find_segments(float** myArray);
+bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,double Rz);
+bool display_planned_path(trajectory_msgs::JointTrajectory& joint_solution_to_print);
+
 
 
 
