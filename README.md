@@ -79,7 +79,17 @@ After editing the URDF we need to reconfigure the Moveit Configuration files acc
 ```
 roslaunch moveit_setup_assistant setup_assistant.launch
 ```
-Make sure everything is aligned in the preview of the robot. Also, change the end-effector to the tip of the extruder and then generate the new Moveit configuration.   
+Make sure everything is aligned in the preview of the robot. Also, change the end-effector to the tip of the extruder and then generate the new Moveit configuration.  
+
+Also we need to make sure the robot discriptrion is being published, so either by adding the following line in the launch file
+```
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+```
+or by running the following command in the terminal
+```
+rosrun robot_state_publisher robot_state_publisher
+```
+more details can be found [here](https://stackoverflow.com/questions/67756243/why-is-rviz-telling-me-that-there-is-no-transfrom-from-velodyne-to-base-link) 
 ### TCP Calibration
 To calibrate the TCP (i.e. the tip of the extruder) in the URDF (to make sure the model defined in URDF is the same as the actual extruder on the real robot) we can use the [TCP Calibration package](https://github.com/Jmeyer1292/tool_point_calibration). Follow the instructions on the website to setup and use the package, based on the results edit the URDF. Use the following commands to install the package and its dependencies;
 
