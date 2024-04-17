@@ -1,0 +1,5 @@
+<launch>
+  <remap from="joint_states" to="robot/joint_states"/>
+  <node pkg="raven" type="raven_for_optimizer" name="raven_node"  output="screen">
+  </node>
+</launch>
