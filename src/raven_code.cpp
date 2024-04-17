@@ -186,7 +186,7 @@ int main(int argc, char** argv) {
         obj.update_starting_joint_pose(planned_path);
         
         obj.set_start_and_stop(SEGMENT);
-        Gcode_array_of_segment = obj.processSegment("straight" , "straight" , 0.01 );
+        Gcode_array_of_segment = obj.processSegment("straight" , "straight" , 0.072 );
         planned_path = obj.path_planner();
         planned_paths.push_back(planned_path);
         planned_Gcodes.push_back(Gcode_array_of_segment);
