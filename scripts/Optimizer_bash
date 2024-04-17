@@ -1,0 +1,44 @@
+/bin/bash -c "target_term -set 7 &&
+target_term -run 1 cd ~/new_sawyer_ws/ &&
+target_term -run 1 source devel/setup.bash &&
+target_term -run 1 ./intera.sh &&
+sleep 2s &&
+target_term -run 1 rosrun intera_interface enable_robot.py -e &&
+sleep 2s &&
+target_term -run 1 rosrun intera_interface joint_trajectory_action_server.py &&
+sleep 1s &&
+target_term -run 2 cd ~/new_sawyer_ws/ &&
+target_term -run 2 source devel/setup.bash &&
+target_term -run 2 ./intera.sh &&
+sleep 1s &&
+target_term -run 2 rosrun topic_tools relay /xarm/joint_states robot/joint_states &&
+sleep 2s  &&
+target_term -run 3 cd ~/new_sawyer_ws/ &&
+target_term -run 3 source devel/setup.bash &&
+target_term -run 3 ./intera.sh &&
+sleep 10s &&
+target_term -run 3 roslaunch extruder_urdf_trial my_connect.launch &&
+sleep 10s &&
+target_term -run 4 cd ~/new_sawyer_ws/ &&
+target_term -run 4 source devel/setup.bash &&
+target_term -run 4 ./intera.sh &&
+sleep 1s &&
+target_term -run 4 rosrun raven Position_publisher.py &&
+sleep 5s  &&
+target_term -run 5 cd ~/new_sawyer_ws/ &&
+target_term -run 5 source devel/setup.bash &&
+target_term -run 5 ./intera.sh &&
+target_term -run 5 rosparam set ikfast_base_frame base &&
+target_term -run 5 rosparam set ikfast_tool_frame extruder_tip &&
+target_term -run 5 rosrun raven Data_logger_for_optimizer.py &&
+sleep 1s  &&
+target_term -run 6 cd ~/new_sawyer_ws/ &&
+target_term -run 6 source devel/setup.bash &&
+target_term -run 6 ./intera.sh &&
+sleep 1s  &&
+target_term -run 6 roslaunch raven raven_optimizer_launch_file.launch
+sleep 1s  &&
+target_term -run 7 cd ~/new_sawyer_ws/ &&
+target_term -run 7 source devel/setup.bash &&
+target_term -run 7 ./intera.sh &&
+target_term -run 7 rosrun raven post_processing.py"
