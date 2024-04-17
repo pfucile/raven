@@ -1,0 +1,31 @@
+/bin/bash -c "target_term -set 7 &&
+target_term -run 1 cd ~/new_sawyer_ws/ &&
+target_term -run 1 source devel/setup.bash &&
+target_term -run 1 roslaunch xarm_gazebo xarm7_beside_table.launch &&
+sleep 10s  &&
+target_term -run 2 cd ~/new_sawyer_ws/ &&
+target_term -run 2 source devel/setup.bash &&
+target_term -run 2 roslaunch xarm7_moveit_config my_connect.launch  &&
+sleep 5s  &&
+target_term -run 3 cd ~/new_sawyer_ws/ &&
+target_term -run 3 source devel/setup.bash &&
+sleep 10s &&
+target_term -run 3 rosrun raven Position_publisher.py &&
+target_term -run 4 cd ~/new_sawyer_ws/ &&
+target_term -run 4 source devel/setup.bash &&
+target_term -run 4 rosrun topic_tools relay /xarm/joint_states robot/joint_states &&
+sleep 5s  &&
+target_term -run 5 cd ~/new_sawyer_ws/ &&
+target_term -run 5 source devel/setup.bash &&
+target_term -run 5 rosparam set ikfast_base_frame world &&
+target_term -run 5 rosparam set ikfast_tool_frame extruder_tip &&
+target_term -run 5 rosrun raven Data_logger_for_optimizer.py &&
+sleep 1s  &&
+target_term -run 6 cd ~/new_sawyer_ws/ &&
+target_term -run 6 source devel/setup.bash &&
+sleep 1s  &&
+target_term -run 6 roslaunch raven raven_optimizer_launch_file.launch
+sleep 1s  &&
+target_term -run 7 cd ~/new_sawyer_ws/ &&
+target_term -run 7 source devel/setup.bash &&
+target_term -run 7 rosrun raven post_processing.py"
