@@ -128,29 +128,86 @@
         float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
         float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
         float total_distance = sqrt(pow(distance_x,2)+pow(distance_y,2)+pow(distance_z,2));
-        int number_of_points =  total_distance*1000*8;
+        int number_of_points =  total_distance*1000;
+        std::cout<<" number_of_points  : " << number_of_points<<std::endl;
         float t = 0;
-        float Rot_x = M_PI;
-        float Rot_y = 0;
+        float Rot_x = myArray[i - seq_element_num ][6];
+        float Rot_y = myArray[i - seq_element_num ][7];
         float delta_Rot_x = (myArray[i - seq_element_num ][6] - Rot_x)/number_of_points ;
         float delta_Rot_y = (myArray[i - seq_element_num ][7] - Rot_y)/number_of_points ;
         float radius = 0.05;
         float X_pos = 0.0;
         float Y_pos = 0.0;
         float Z_pos = 0.0;
-        float layer_height = 0.4; //mm
-	float extrusion_multiplier = 0.9; //mm
-	float filament_diameter = 1.75; //mm
+        float time_to_point = time_to_start / number_of_points;
 
         for (int k=0; k<number_of_points;k++)
         {
             pose = Eigen::Isometry3d::Identity();
-            float time_to_point = time_to_start / number_of_points;
             X_pos = current_pose.pose.position.x + (radius * cos(t)) - radius - (((distance_x)/(2*M_PI)) * t);
             Y_pos = current_pose.pose.position.y + (radius * sin(t))- (((distance_y)/(2*M_PI)) * t);
             Z_pos = current_pose.pose.position.z - ((distance_z/(2*M_PI)) * t);
+            
             Rot_x = Rot_x + delta_Rot_x;
             Rot_y = Rot_y + delta_Rot_y;
+            
+            std::cout<<" delta_Rot_x  : " << delta_Rot_x << "  delta_Rot_y  :  " <<delta_Rot_y<<std::endl;
+            t = t + (2 * M_PI / number_of_points);
+            pose.translation() = Eigen::Vector3d(X_pos , Y_pos , Z_pos );
+            pose *= Eigen::AngleAxisd(Rot_x, Eigen::Vector3d::UnitX()) *Eigen::AngleAxisd(Rot_y,Eigen::Vector3d::UnitY()); // this flips the tool around so that Z is down
+            //pt = makeCartesianPoint(pattern_origin * pose, time_to_point);
+            pt = makeTolerancedCartesianPoint(pattern_origin * pose, time_to_point);
+            result.push_back(pt);
+            publishGoal(myArray[i - seq_element_num][6], myArray[i - seq_element_num][7],myArray[i - seq_element_num][8], time_to_point, X_pos , Y_pos ,Z_pos);
+
+            }
+
+
+    }
+
+
+    void segment_wise_printer_class::direct_move_to_point(float time_to_start){
+        
+        pattern_origin = Eigen::Isometry3d::Identity();
+        pattern_origin.translation() = Eigen::Vector3d(0.0,0.0,0.0);
+        
+        
+        //to add the current pose into the trajectoery
+        result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(joint_pose) ));
+        pose = Eigen::Isometry3d::Identity();
+
+        GcodeArray.push_back({1000.0f, 0.3f, 0.600f*time_to_start });//preflow
+        GcodeArray.push_back({1000.0f, 0.2f, 0.395f*time_to_start});// so that we have time to remove the filament
+        GcodeArray.push_back({1000.0f, 0.1f,0.005f*time_to_start}); //so that the first layer sticks to the bed
+
+        float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
+        float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
+        float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
+        float total_distance = sqrt(pow(distance_x,2)+pow(distance_y,2)+pow(distance_z,2));
+        int number_of_points =  1000;
+        std::cout<<" number_of_points  : " << number_of_points<<std::endl;
+        float t = 0;
+        float Rot_x = M_PI;
+        float Rot_y = 0.0;
+        float delta_Rot_x = (myArray[i - seq_element_num ][6] - Rot_x)/number_of_points ;
+        float delta_Rot_y = (myArray[i - seq_element_num ][7] - Rot_y)/number_of_points ;
+        float radius = 0.0;
+        float X_pos = 0.0;
+        float Y_pos = 0.0;
+        float Z_pos = 0.0;
+        float time_to_point = time_to_start / number_of_points;
+
+        for (int k=0; k<number_of_points;k++)
+        {
+            pose = Eigen::Isometry3d::Identity();
+            X_pos = current_pose.pose.position.x + (radius * cos(t)) - radius - (((distance_x)/(2*M_PI)) * t);
+            Y_pos = current_pose.pose.position.y + (radius * sin(t))- (((distance_y)/(2*M_PI)) * t);
+            Z_pos = current_pose.pose.position.z - ((distance_z/(2*M_PI)) * t);
+            
+            Rot_x = Rot_x + delta_Rot_x;
+            Rot_y = Rot_y + delta_Rot_y;
+            
+            std::cout<<" delta_Rot_x  : " << delta_Rot_x << "  delta_Rot_y  :  " <<delta_Rot_y<<std::endl;
             t = t + (2 * M_PI / number_of_points);
             pose.translation() = Eigen::Vector3d(X_pos , Y_pos , Z_pos );
             pose *= Eigen::AngleAxisd(Rot_x, Eigen::Vector3d::UnitX()) *Eigen::AngleAxisd(Rot_y,Eigen::Vector3d::UnitY()); // this flips the tool around so that Z is down
@@ -166,37 +223,6 @@
 
 
 
-    void segment_wise_printer_class::direct_move_to_point(float speed){
-
-        pattern_origin = Eigen::Isometry3d::Identity();
-        pattern_origin.translation() = Eigen::Vector3d(0.0,0.0,0.0);
-        float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
-        float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
-        float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
-        float total_distance = sqrt(pow(distance_x,2)+pow(distance_y,2)+pow(distance_z,2));
-        //to calculate the difference in angle from the current position and the next position
-        //float alpha = myArray[i - seq_element_num ][6] - 3.14
-        //float angular_distance = asin(pow(sin(,2)) 
-        float time_to_start = total_distance*60.0/speed;
-        
-        //to add the current pose into the trajectory
-        result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(joint_pose) ));
-        pose = Eigen::Isometry3d::Identity();
-
-        GcodeArray.push_back({1000.0f, 1.2f, 0.600f*time_to_start });//preflow
-        GcodeArray.push_back({1000.0f, 0.0f, 0.395f*time_to_start});// so that we have time to remove the filament
-        GcodeArray.push_back({1000.0f, 0.1f,0.005f*time_to_start}); //so that the first layer sticks to the bed
-	
-	pose.translation() = Eigen::Vector3d(myArray[i - seq_element_num ][2]+ori_adj_x , myArray[i - seq_element_num ][3]+ori_adj_y , myArray[i - seq_element_num ][4]+ori_adj_z );
-	pose *= Eigen::AngleAxisd(myArray[i - seq_element_num ][6], Eigen::Vector3d::UnitX()) *Eigen::AngleAxisd(myArray[i - seq_element_num ][7],Eigen::Vector3d::UnitY()); // this flips the tool around so that Z is down and to move the robot to the specified angle
-	//pt = makeCartesianPoint(pattern_origin * pose, time_to_start);
-	pt = makeTolerancedCartesianPoint(pattern_origin * pose, time_to_start);
-	result.push_back(pt);
-	publishGoal(myArray[i - seq_element_num][6], myArray[i - seq_element_num][7],myArray[i - seq_element_num][8], time_to_start, myArray[i - seq_element_num ][2]+ori_adj_x , myArray[i - seq_element_num ][3]+ori_adj_y , myArray[i - seq_element_num ][4]+ori_adj_z);
-
-
-    }
-
     // Function to process input data and create an array
     std::vector<std::vector<float>> segment_wise_printer_class::processSegment(std::string starting_style , std::string ending_style , float retract_distance ) {
         result.clear();
@@ -207,7 +233,7 @@
             
         }
         else if (starting_style == "straight"){
-            segment_wise_printer_class::direct_move_to_point(1.0);
+            segment_wise_printer_class::direct_move_to_point(time_mov_to_start);
         }
         
             
@@ -260,7 +286,7 @@
             //For Gcodes with Evalue
             time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000)/print_velocity ;
            feed_rate_for_GcodeArray =  (60 *(myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5] ))/ time_between_points ; //calculating the material feed rate in mm/minutes for the extruder
-            Extrusion_for_GcodeArray =  myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5] ; //for gcodes with Evalue
+            Extrusion_for_GcodeArray =extrusion_multiplier*(  myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5]); //for gcodes with Evalue
             time_for_GcodeArray =  time_between_points ;
             GcodeArray.push_back({feed_rate_for_GcodeArray, Extrusion_for_GcodeArray,time_for_GcodeArray });
             
