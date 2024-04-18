@@ -184,7 +184,7 @@
         float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
         float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
         float total_distance = sqrt(pow(distance_x,2)+pow(distance_y,2)+pow(distance_z,2));
-        int number_of_points =  1000;
+        int number_of_points =  200;
         std::cout<<" number_of_points  : " << number_of_points<<std::endl;
         float t = 0;
         float Rot_x = M_PI;
