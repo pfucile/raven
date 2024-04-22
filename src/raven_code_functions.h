@@ -145,6 +145,9 @@ bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float 
 bool include_objects_to_env();
 bool executeTrajectory(const trajectory_msgs::JointTrajectory& trajectory);
 int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print );
+int testExtrusionCalculation(std::vector<std::vector<float>>& GcodeArray_to_print );
+float calculate_time_for_E_and_F(float E, float F );
+float calculate_F_for_E_and_time(float Time, float E );
 std::vector<descartes_core::TrajectoryPtPtr> go_to_point(std::vector<double>, double time_to_point);
 int publishGoal(float Rx,float Ry,float Rz,float TBP,float Px,float Py,float Pz );
 int Calculate_file_length(std::string path_to_file);
