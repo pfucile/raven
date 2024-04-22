@@ -313,7 +313,7 @@
 
 
         GcodeArray.push_back({calculate_F_for_E_and_time(0.05f,-0.5f), -0.5f,0.05f });
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.05f,-0.1f), -0.1f,0.05f });
+        GcodeArray.push_back({calculate_F_for_E_and_time(time_to_go_back -0.05f,-0.1f), -0.1f,time_to_go_back-0.05f });
         result.push_back(pt);
         publishGoal(myArray[i-1][6],myArray[i-1][7],myArray[i-1][8],time_to_go_back,myArray[i-1][2]+ori_adj_x,myArray[i-1][3]+ori_adj_y,myArray[i-1][4]+ori_adj_z+ retract_distance);
         return GcodeArray;
