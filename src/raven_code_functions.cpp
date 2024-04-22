@@ -176,10 +176,10 @@
         result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(joint_pose) ));
         pose = Eigen::Isometry3d::Identity();
 
-        GcodeArray.push_back({1000.0f, 0.3f, 0.600f*time_to_start });//preflow
-        GcodeArray.push_back({1000.0f, 0.2f, 0.395f*time_to_start});// so that we have time to remove the filament
-        GcodeArray.push_back({1000.0f, 0.1f,0.005f*time_to_start}); //so that the first layer sticks to the bed
-
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.600f*time_to_start,1.2f), 1.2f, 0.600f*time_to_start });//preflow
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.395f*time_to_start,0.0f), 0.0f, 0.395f*time_to_start});// so that we have time to remove the filament
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.005f*time_to_start,0.1f), 0.1f,0.005f*time_to_start}); //so that the first layer sticks to the bed
+	
         float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
         float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
         float  distance_z = current_pose.pose.position.z - (myArray[i - seq_element_num ][4]+ori_adj_z);
@@ -248,12 +248,12 @@
             
             if (myArray[i-seq_element_num+j][1] <= max_print_speed)
             {
-                print_velocity = (myArray[i-seq_element_num+j][1]*1000)/60; // converting from m/min to mm/s
+                print_velocity = (myArray[i-seq_element_num+j][1]*1000.0f)/60.0f; // converting from m/min to mm/s
 
             }
             else
             {
-                print_velocity = (max_print_speed*1000)/60;// converting from m/min to mm/s
+                print_velocity = (max_print_speed*1000.0f)/60.0f;// converting from m/min to mm/s
             }
 
 
@@ -284,8 +284,8 @@
             */
             
             //For Gcodes with Evalue
-            time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000)/print_velocity ;
-           feed_rate_for_GcodeArray =  (60 *(myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5] ))/ time_between_points ; //calculating the material feed rate in mm/minutes for the extruder
+            time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000.0f)/print_velocity ;
+           feed_rate_for_GcodeArray =  (60.0f *(myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5] ))/ time_between_points ; //calculating the material feed rate in mm/minutes for the extruder
             Extrusion_for_GcodeArray =extrusion_multiplier*(  myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5]); //for gcodes with Evalue
             time_for_GcodeArray =  time_between_points ;
             GcodeArray.push_back({feed_rate_for_GcodeArray, Extrusion_for_GcodeArray,time_for_GcodeArray });
@@ -311,8 +311,8 @@
         pt = makeTolerancedCartesianPoint(pattern_origin * pose,time_to_go_back);
 
 
-        GcodeArray.push_back({4000.0f, -0.5f,0.05f });
-        GcodeArray.push_back({4000.0f, -0.1f,0.05f });
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.05f,-0.5f), -0.5f,0.05f });
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.05f,-0.1f), -0.1f,0.05f });
         result.push_back(pt);
         publishGoal(myArray[i-1][6],myArray[i-1][7],myArray[i-1][8],time_to_go_back,myArray[i-1][2]+ori_adj_x,myArray[i-1][3]+ori_adj_y,myArray[i-1][4]+ori_adj_z+ retract_distance);
         return GcodeArray;
@@ -725,21 +725,18 @@ std::vector<float>   Calculate_origin_adjustment(float move_down_value, float** 
 int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print )
 {
     ser.write("G4 S1\r\n");
+	// We are defining the typical command symbols and string elements of a gcode
+    std::string g_str1="G1 F";
+    std::string g_strE=" E";
+    std::string g_strF;
+    std::string g_str2;
+    std::string end_str=" \r\n";
+    std::string g_str;
+    std::string wait_str;
+    std::string wait_str1 = "G4 S";
+    std::string wait_time_str;
     for (int j = 0; j < GcodeArray_to_print.size(); j++)
     {
-
-        // We are defining the typical command symbols and string elements of a gcode
-        std::string g_str1="G1 F";
-        std::string g_strE=" E";
-        std::string g_strF;
-        std::string g_str2;
-        std::string end_str=" \r\n";
-        std::string g_str;
-        std::string wait_str;
-        std::string wait_str1 = "G4 S";
-        std::string wait_time_str;
-
-
         // We take the gcode values from the gcode array and put it inside strings
         g_strF = std::to_string(GcodeArray_to_print[j][0]);
         g_str2=std::to_string(GcodeArray_to_print[j][1]);
@@ -758,6 +755,52 @@ int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print )
         std::this_thread::sleep_for(ms);
     }
     return 0;
+}
+int testExtrusionCalculation(std::vector<std::vector<float>>& GcodeArray_to_print)
+{
+    float print_time_TBP = 0.0;
+    float print_time_from_E = 0.0;
+    float F = 0.0;
+    float E = 0.0;
+    float Time_E = 0.0 ;
+    for (int j = 0; j < GcodeArray_to_print.size(); j++)
+    {
+
+        // to claculate the total print time as specified by the TBP
+        print_time_TBP = print_time_TBP + GcodeArray_to_print[j][2];
+        
+
+        // We take the gcode values from the gcode array and put it inside strings
+        F = GcodeArray_to_print[j][0];
+        E = GcodeArray_to_print[j][1];
+        if (F > 0.0f){
+            Time_E = calculate_time_for_E_and_F(E,F);
+        }
+        else
+            Time_E = GcodeArray_to_print[j][2];
+        
+        print_time_from_E = print_time_from_E + Time_E;
+        
+    }
+    std::cout<<"print_time_TBP  :  "<<print_time_TBP<<std::endl;
+    std::cout<<"print_time_from_E  :  "<<print_time_from_E<<std::endl;
+    return 0;
+}
+
+//function that can be used to claculate the time for the extrusion of material for -
+// a particular E and F value
+float calculate_time_for_E_and_F(float E, float F )
+{
+    E = std::fabs(E);
+    float Time_E = (E*60.0f)/F;
+    return Time_E;
+}
+
+float calculate_F_for_E_and_time(float Time, float E )
+{
+    E = std::fabs(E);
+    float F = (E*60.0f)/Time;
+    return F;
 }
 
 // function for creating cartesian trajectory point
