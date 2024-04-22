@@ -202,6 +202,7 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < planned_paths.size(); ++i){
         if (!planned_paths[i].points.empty()) {
             std::cout<< i<<std::endl;
+	    //int tester = testExtrusionCalculation(planned_Gcodes[i] );
             obj.print(planned_paths[i],planned_Gcodes[i]);
             
         }
