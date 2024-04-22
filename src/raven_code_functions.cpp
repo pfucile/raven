@@ -736,6 +736,20 @@ int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print )
     std::string wait_str;
     std::string wait_str1 = "G4 S";
     std::string wait_time_str;
+    std::mutex lock;
+    bool motion = false;
+    std::vector<float> z_motion;
+    moveit::planning_interface::MoveGroupInterface move_group_interface(PLANNING_GROUP);
+    while (!motion){
+       geometry_msgs::PoseStamped current_pose = move_group_interface.getCurrentPose();
+       z_motion.push_back(current_pose.pose.position.z);
+       if (std::round(z_motion[0] * 1000.0f) != std::round(current_pose.pose.position.z * 1000.0f)) {
+           motion = true;
+           z_motion.clear();
+       }
+       sleep(0.001);
+       //std::cout<<" std::round(current_pose.pose.position.z * 1000.0f)  :  "<<std::round(current_pose.pose.position.z * 1000.0f)<<std::endl;
+    }
     for (int j = 0; j < GcodeArray_to_print.size(); j++)
     {
         // We take the gcode values from the gcode array and put it inside strings
