@@ -285,8 +285,9 @@
             
             //For Gcodes with Evalue
             time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000.0f)/print_velocity ;
-           feed_rate_for_GcodeArray =  (60.0f *(myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5] ))/ time_between_points ; //calculating the material feed rate in mm/minutes for the extruder
-            Extrusion_for_GcodeArray =extrusion_multiplier*(  myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5]); //for gcodes with Evalue
+            Extrusion_for_GcodeArray =extrusion_multiplier*(  myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5]); 
+            feed_rate_for_GcodeArray =  (60.0f *Extrusion_for_GcodeArray)/ time_between_points ; //calculating the material feed rate in mm/minutes for the extruder
+            //for gcodes with Evalue
             time_for_GcodeArray =  time_between_points ;
             GcodeArray.push_back({feed_rate_for_GcodeArray, Extrusion_for_GcodeArray,time_for_GcodeArray });
             
