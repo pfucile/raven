@@ -209,9 +209,10 @@ def main():
                     print("killing due to error message from optmizer")
                     #sys.exit(0)
                     break
-
+            else :
+                time.sleep(0.01) # Sleep to prevent CPU hogging
                     
-            rospy.sleep(0.01)  # Sleep to prevent CPU hogging
+            #rospy.sleep(0.01)  # Sleep to prevent CPU hogging
     except KeyboardInterrupt:
         print("KeyboardInterrupt detected, exiting...")
         sys.exit(0)
