@@ -195,6 +195,7 @@ def calculate_correction(goal_array, index_array,start_point,error_arr,n):
     # Divide the array by its sum to make the sum of elements 1
     gaussian_curve /= array_sum
     kernal = gaussian_curve
+    correction_point_beginning = start_point
     for i in range (0,np.size(goal_array,0), 1):
         if i > start_point and i < np.size(goal_array,0)-3 :
             correction_x = 0
