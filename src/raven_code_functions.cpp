@@ -135,7 +135,7 @@
         float Rot_y = myArray[i - seq_element_num ][7];
         float delta_Rot_x = (myArray[i - seq_element_num ][6] - Rot_x)/number_of_points ;
         float delta_Rot_y = (myArray[i - seq_element_num ][7] - Rot_y)/number_of_points ;
-        float radius = 0.05;
+        float radius = 0.02;
         float X_pos = 0.0;
         float Y_pos = 0.0;
         float Z_pos = 0.0;
@@ -159,7 +159,7 @@
             pt = makeTolerancedCartesianPoint(pattern_origin * pose, time_to_point);
             result.push_back(pt);
             publishGoal(myArray[i - seq_element_num][6], myArray[i - seq_element_num][7],myArray[i - seq_element_num][8], time_to_point, X_pos , Y_pos ,Z_pos);
-
+            
             }
 
 
@@ -176,9 +176,9 @@
         result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(joint_pose) ));
         pose = Eigen::Isometry3d::Identity();
 
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.600f*time_to_start,1.2f), 1.2f, 0.600f*time_to_start });//preflow
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.395f*time_to_start,0.0f), 0.0f, 0.395f*time_to_start});// so that we have time to remove the filament
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.005f*time_to_start,0.1f), 0.1f,0.005f*time_to_start}); //so that the first layer sticks to the bed
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.400f*time_to_start,0.0f), 0.0f, 0.400f*time_to_start });//preflow
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.599f*time_to_start,0.0f), 0.0f, 0.599f*time_to_start});// so that we have time to remove the filament
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.001f*time_to_start,4.5f), 4.5f,0.001f*time_to_start}); //so that the first layer sticks to the bed
 	
         float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
         float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
@@ -187,8 +187,10 @@
         int number_of_points =  200;
         std::cout<<" number_of_points  : " << number_of_points<<std::endl;
         float t = 0;
-        float Rot_x = M_PI;
-        float Rot_y = 0.0;
+        //float Rot_x = M_PI;
+        //float Rot_y = 0.0;
+        float Rot_x = myArray[i - seq_element_num ][6];
+        float Rot_y = myArray[i - seq_element_num ][7];
         float delta_Rot_x = (myArray[i - seq_element_num ][6] - Rot_x)/number_of_points ;
         float delta_Rot_y = (myArray[i - seq_element_num ][7] - Rot_y)/number_of_points ;
         float radius = 0.0;
@@ -244,7 +246,7 @@
             
             pose.translation() = Eigen::Vector3d(myArray[i-seq_element_num+j][2]+ori_adj_x, myArray[i-seq_element_num+j][3]+ori_adj_y, myArray[i-seq_element_num+j][4]+ori_adj_z);
             // to orient the robot end-effector along the direction as given in the Gcode
-            pose *= Eigen::AngleAxisd(myArray[i-seq_element_num+j][6], Eigen::Vector3d::UnitX())*Eigen::AngleAxisd(myArray[i-seq_element_num+j][7], Eigen::Vector3d::UnitY());
+            pose *= Eigen::AngleAxisd(myArray[i-seq_element_num+j][6], Eigen::Vector3d::UnitX())*Eigen::AngleAxisd(myArray[i-seq_element_num+j][7], Eigen::Vector3d::UnitY())*Eigen::AngleAxisd(myArray[i-seq_element_num+j][8], Eigen::Vector3d::UnitZ());
             
             if (myArray[i-seq_element_num+j][1] <= max_print_speed)
             {
@@ -285,6 +287,7 @@
             
             //For Gcodes with Evalue
             time_between_points = (sqrt(pow(myArray[i-seq_element_num+j][2]-myArray[i-seq_element_num+j-1][2],2)+pow(myArray[i-seq_element_num+j][3]-myArray[i-seq_element_num+j-1][3],2)+pow(myArray[i-seq_element_num+j][4]-myArray[i-seq_element_num+j-1][4],2))*1000.0f)/print_velocity ;
+            
             Extrusion_for_GcodeArray =extrusion_multiplier*(  myArray[i-seq_element_num+j][5] - myArray[i-seq_element_num+j-1][5]); 
             feed_rate_for_GcodeArray =  (60.0f *Extrusion_for_GcodeArray)/ time_between_points ; //calculating the material feed rate in mm/minutes for the extruder
             //for gcodes with Evalue
@@ -303,17 +306,31 @@
 
 
         }
-
+        
+        int number_of_retun_points = 200 ;
+        for (int k=1; k<=number_of_retun_points;k++){
+            float unit_distance = (retract_distance/2)/number_of_retun_points;
+            float unit_time = (2*time_to_go_back/3)/number_of_retun_points;
+            pose = Eigen::Isometry3d::Identity();
+            pose.translation() = Eigen::Vector3d(myArray[i-1][2]+ori_adj_x,myArray[i-1][3]+ori_adj_y,myArray[i-1][4]+ori_adj_z+unit_distance*k );
+            //pose *= Eigen::AngleAxisd(3.14, Eigen::Vector3d::UnitX()) ;// this flips the tool around so that Z is down
+            pose *= Eigen::AngleAxisd(myArray[i-1][6], Eigen::Vector3d::UnitX())*Eigen::AngleAxisd(myArray[i-1][7], Eigen::Vector3d::UnitY())*Eigen::AngleAxisd(myArray[i-1][8], Eigen::Vector3d::UnitZ());
+            //pt = makeCartesianPoint(pattern_origin * pose, 5.0);
+            pt = makeTolerancedCartesianPoint(pattern_origin * pose,unit_time);
+            result.push_back(pt);
+        }
+        
         pose = Eigen::Isometry3d::Identity();
         pose.translation() = Eigen::Vector3d(myArray[i-1][2]+ori_adj_x,myArray[i-1][3]+ori_adj_y,myArray[i-1][4]+ori_adj_z+retract_distance );
-        pose *= Eigen::AngleAxisd(3.14, Eigen::Vector3d::UnitX()) ;// this flips the tool around so that Z is down
-        //pose *= Eigen::AngleAxisd(myArray[i-1][6], Eigen::Vector3d::UnitX())*Eigen::AngleAxisd(myArray[i-1][7], Eigen::Vector3d::UnitY());
+        //pose *= Eigen::AngleAxisd(3.14, Eigen::Vector3d::UnitX()) ;// this flips the tool around so that Z is down
+        pose *= Eigen::AngleAxisd(myArray[i][6], Eigen::Vector3d::UnitX())*Eigen::AngleAxisd(myArray[i][7], Eigen::Vector3d::UnitY())*Eigen::AngleAxisd(myArray[i][8], Eigen::Vector3d::UnitZ());
         //pt = makeCartesianPoint(pattern_origin * pose, 5.0);
-        pt = makeTolerancedCartesianPoint(pattern_origin * pose,time_to_go_back);
+        pt = makeTolerancedCartesianPoint(pattern_origin * pose,time_to_go_back/3);
+        
 
-
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.05f,-0.5f), -0.5f,0.05f });
-        GcodeArray.push_back({calculate_F_for_E_and_time(time_to_go_back -0.05f,-0.1f), -0.1f,time_to_go_back-0.05f });
+        //GcodeArray.push_back({calculate_F_for_E_and_time(0.05f,0.4f), 0.4f,0.05f }); //extra extrusion for the end.
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.05f,-4.0f), -4.0f,0.05f });
+        GcodeArray.push_back({calculate_F_for_E_and_time(time_to_go_back -0.05f,-0.5f), -0.5f,time_to_go_back-0.05f });
         result.push_back(pt);
         publishGoal(myArray[i-1][6],myArray[i-1][7],myArray[i-1][8],time_to_go_back,myArray[i-1][2]+ori_adj_x,myArray[i-1][3]+ori_adj_y,myArray[i-1][4]+ori_adj_z+ retract_distance);
         return GcodeArray;
@@ -326,7 +343,7 @@
         result.clear();
         
         std::vector<double> starting_point_vector = {starting_point[0], starting_point[1], starting_point[2],3.14159265 , 0.0,0.0};
-        result = go_to_point(starting_point_vector, 10.55);
+        result = go_to_point(starting_point_vector, 10.0);
         return GcodeArray;
     }
     
@@ -414,10 +431,14 @@
         }        
     }
     void segment_wise_printer_class::print(trajectory_msgs::JointTrajectory joint_solution_to_print ,std::vector<std::vector<float>> Gcode_array_of_segment){
+        std::cout<< " status 11" <<std::endl;
         auto f = std::async(std::launch::async, sendGcode , std::ref(Gcode_array_of_segment));
+        std::cout<< " status 22" <<std::endl;
         if (!executeTrajectory(joint_solution_to_print , follow_joint_trajectory_action)) {
             ROS_ERROR("Could not execute trajectory!");
+            std::cout<< " status 101" <<std::endl;
             }
+        std::cout<< " status 33" <<std::endl;
         std::cout<< "printing of segment done"<<std::endl;
     }
 
@@ -725,52 +746,64 @@ std::vector<float>   Calculate_origin_adjustment(float move_down_value, float** 
 //the function sends the gcodes stored in the global GcodeArray based on the parameters specified in the array
 int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print )
 {
-    ser.write("G4 S1\r\n");
-	// We are defining the typical command symbols and string elements of a gcode
-    std::string g_str1="G1 F";
-    std::string g_strE=" E";
-    std::string g_strF;
-    std::string g_str2;
-    std::string end_str=" \r\n";
-    std::string g_str;
-    std::string wait_str;
-    std::string wait_str1 = "G4 S";
-    std::string wait_time_str;
-    std::mutex lock;
-    bool motion = false;
-    std::vector<float> z_motion;
-    moveit::planning_interface::MoveGroupInterface move_group_interface(PLANNING_GROUP);
-    while (!motion){
-       geometry_msgs::PoseStamped current_pose = move_group_interface.getCurrentPose();
-       z_motion.push_back(current_pose.pose.position.z);
-       if (std::round(z_motion[0] * 1000.0f) != std::round(current_pose.pose.position.z * 1000.0f)) {
-           motion = true;
-           z_motion.clear();
-       }
-       sleep(0.001);
-       //std::cout<<" std::round(current_pose.pose.position.z * 1000.0f)  :  "<<std::round(current_pose.pose.position.z * 1000.0f)<<std::endl;
-    }
-    for (int j = 0; j < GcodeArray_to_print.size(); j++)
-    {
-        // We take the gcode values from the gcode array and put it inside strings
-        g_strF = std::to_string(GcodeArray_to_print[j][0]);
-        g_str2=std::to_string(GcodeArray_to_print[j][1]);
-        g_str=g_str1+g_strF+g_strE+g_str2+end_str;
+    if (!GcodeArray_to_print.empty()) {
+	    ser.write("G4 S1\r\n");
+	    // We are defining the typical command symbols and string elements of a gcode
+	    std::string g_str1="G1 F";
+	    std::string g_strE=" E";
+	    std::string g_strF;
+	    std::string g_str2;
+	    std::string end_str=" \r\n";
+	    std::string g_str;
+	    std::string wait_str;
+	    std::string wait_str1 = "G4 P";
+	    std::string wait_time_str;
+	    std::mutex lock;
+	    bool motion = false;
+	    float z_current;
+	    moveit::planning_interface::MoveGroupInterface move_group_interface(PLANNING_GROUP);
+	    geometry_msgs::PoseStamped current_pose = move_group_interface.getCurrentPose();
+	    z_current = std::round((current_pose.pose.position.z)* 10000.0f) ;
+	    while (!motion){
+	       current_pose = move_group_interface.getCurrentPose();
+	       if ( z_current != std::round(current_pose.pose.position.z * 10000.0f)) {
+		   motion = true;
+	       }
+	       else{
+		   sleep(0.0001);
+		   //std::cout<<" std::round(current_pose.pose.position.z * 1000.0f)  :  "<<std::round(current_pose.pose.position.z * 1000.0f)<<std::endl;
+	       }
+	    }
+	    for (int j = 0; j < GcodeArray_to_print.size(); j++)
+	    {
 
+		if (GcodeArray_to_print[j][1] == 0.0f){
+		    //if the E value is 0 then sending the wait command for the specified time 
+		    // We take the gcode values from the gcode array and put it inside strings
+		    wait_time_str = std::to_string(GcodeArray_to_print[j][2]*1000);
+		    wait_str = wait_str1+ wait_time_str+ end_str;
+		    // This next command actually sends the gcode to the extruder
+		    //ser.write(wait_str);
+		}
+		else {
+		    // We take the gcode values from the gcode array and put it inside strings
+		    g_strF = std::to_string(GcodeArray_to_print[j][0]);
+		    g_str2=std::to_string(GcodeArray_to_print[j][1]);
+		    g_str=g_str1+g_strF+g_strE+g_str2+end_str;
 
-        wait_time_str = std::to_string(GcodeArray_to_print[j][2]);
-        wait_str = wait_str1+ wait_time_str+ end_str;
-
-
-        // This next command actually sends the gcode to the robot
-        ser.write(g_str);
-        float delay = 0.0;
-        // Conversion of the time between points in ms
-        std::chrono::milliseconds ms{static_cast<long int>((GcodeArray_to_print[j][2]- delay )*1000)};
-        std::this_thread::sleep_for(ms);
-    }
+		    // This next command actually sends the gcode to the extruder
+		    ser.write(g_str);
+		}
+		float delay = 0.0;
+		// Conversion of the time between points in ms
+		std::chrono::milliseconds ms{static_cast<long int>((GcodeArray_to_print[j][2]- delay )*1000)};
+		std::this_thread::sleep_for(ms);
+	    }
+	    std::cout<<" Done sending Gcode to the extruder  : " <<std::endl;
+	    }
     return 0;
 }
+
 int testExtrusionCalculation(std::vector<std::vector<float>>& GcodeArray_to_print)
 {
     float print_time_TBP = 0.0;
@@ -791,9 +824,9 @@ int testExtrusionCalculation(std::vector<std::vector<float>>& GcodeArray_to_prin
         if (F > 0.0f){
             Time_E = calculate_time_for_E_and_F(E,F);
         }
-        else
+        else{
             Time_E = GcodeArray_to_print[j][2];
-        
+        }
         print_time_from_E = print_time_from_E + Time_E;
         
     }
@@ -817,6 +850,7 @@ float calculate_F_for_E_and_time(float Time, float E )
     float F = (E*60.0f)/Time;
     return F;
 }
+
 
 // function for creating cartesian trajectory point
 descartes_core::TrajectoryPtPtr makeCartesianPoint(const Eigen::Isometry3d& pose, double dt)
@@ -890,6 +924,10 @@ bool attach_collision_objects(float Position_x,float Position_y,float Position_z
 }
 
 
+
+
+
+
 //the function to add tables or other objects to the environment
 // the function takes the position, orientation w and dimension of the object as the argument along with the name of the object
 bool include_collision_objects_to_env(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name )
@@ -944,14 +982,14 @@ std::vector<std::vector<int>> find_segments(float** myArray) {
     float prev_seg_num = myArray[0][9];
     std::vector <std::vector<int>> segmentation_array; //to store the start point and the end point of the segment
     for (int i = 0; i < *count-1; i++) {
-        if (myArray[i][9] == prev_seg_num and seq_element_num <= 10000 and i < (*count-2)) {
+        if (myArray[i][9] == prev_seg_num and seq_element_num <= 20000 and i < (*count-2)) {
             seq_element_num == seq_element_num++;
             E = myArray[i][5] - E_previous;
             E_subtotal = E_subtotal + E;
             E_previous = myArray[i][5];
             prev_seg_num = myArray[i][9];
         } 
-        else if (myArray[i][9] != prev_seg_num or seq_element_num > 10000 or i == (*count-2)) {
+        else if (myArray[i][9] != prev_seg_num or seq_element_num > 20000 or i == (*count-2)) {
             std::vector<int> newRow;
             newRow.push_back(i - seq_element_num);
             newRow.push_back(i - 1);

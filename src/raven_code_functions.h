@@ -82,11 +82,11 @@ extern ros::Publisher trajectory_pub;
 
 class segment_wise_printer_class {
 private:
-    const std::string PLANNING_GROUP = "right_arm";
+    const std::string PLANNING_GROUP = "xarm7";
     const std::string robot_description = "robot_description";
-    const std::string world_frame = "base";
+    const std::string world_frame = "world";
     const std::string tcp_frame = "extruder_tip";
-    std::string follow_joint_trajectory_action = "robot/limb/right/follow_joint_trajectory";
+    std::string follow_joint_trajectory_action = "/xarm/xarm7_traj_controller/follow_joint_trajectory";
     moveit::planning_interface::MoveGroupInterface move_group_interface;
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     const moveit::core::JointModelGroup *joint_model_group;

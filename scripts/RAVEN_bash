@@ -1,23 +1,34 @@
-/bin/bash -c "target_term -set 5 &&
+/bin/bash -c "target_term -set 6 &&
  target_term -run 1 cd ~/xarm_ws/ &&
+ target_term -run 1 source /opt/ros/noetic/setup.bash &&
  target_term -run 1 source devel/setup.bash &&
- target_term -run 1 roslaunch xarm7_moveit_config realMove_exec.launch robot_ip:=192.168.1.199 [velocity_control:=false] [report_type:=normal] &&
+ target_term -run 1 roslaunch xarm7_moveit_config real_my_connect.launch &&
  sleep 4s &&
  target_term -run 2 cd ~/xarm_ws/ &&
+  target_term -run 2 source /opt/ros/noetic/setup.bash &&
  target_term -run 2 source devel/setup.bash &&
  target_term -run 2 rosrun topic_tools relay /xarm/joint_states robot/joint_states &&
  sleep 1s &&
  target_term -run 3 cd ~/xarm_ws/ &&
+  target_term -run 3 source /opt/ros/noetic/setup.bash &&
  target_term -run 3 source devel/setup.bash &&
- target_term -run 3 rosparam set ikfast_base_frame link_base &&
- target_term -run 3 rosparam set ikfast_tool_frame link7 &&
+ target_term -run 3 rosparam set ikfast_base_frame world &&
+ target_term -run 3 rosparam set ikfast_tool_frame extruder_tip &&
  target_term -run 3 rosrun raven Position_publisher.py &&
  sleep 2s &&
  target_term -run 4 cd ~/xarm_ws/ &&
+  target_term -run 4 source /opt/ros/noetic/setup.bash &&
  target_term -run 4 source devel/setup.bash &&
  target_term -run 4 rosrun raven Data_logger.py &&
  sleep 1s &&
- target_term -run 5 cd ~/xarm_ws/ &&
+ target_term -run 5 cd ~/xarm_ws/ && 
+ target_term -run 5 source /opt/ros/noetic/setup.bash &&
  target_term -run 5 source devel/setup.bash &&
  sleep 5s &&
- target_term -run 5 roslaunch raven raven_launch_file.launch"
+ target_term -run 5 roslaunch raven raven_launch_file.launch
+ sleep 10s  &&
+ target_term -run 6 cd ~/xarm_ws/ && 
+ target_term -run 6 source /opt/ros/noetic/setup.bash &&
+ target_term -run 6 source devel/setup.bash &&
+ sleep 1s  &&
+ target_term -run 6 rosrun raven path_visualizer.py"

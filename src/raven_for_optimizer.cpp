@@ -50,7 +50,7 @@ float nozzle_diameter = 0.4; //mm
 float layer_height = 0.3; //mm
 float extrusion_multiplier = 0.6; //mm
 float filament_diameter = 1.75; //mm
-float starting_point[] = {0.45, 0.065, 0.1325}; //give the desired initial starting pose here!!
+float starting_point[] = {0.45, 0.0, 0.1325}; //give the desired initial starting pose here!!
 float move_down_value = 0.072;  //adjust this number if the extruder is too close or too far from the print bed
 float time_mov_to_start = 10 ; //time taken to move from the waiting point to the first point on the segment
 float time_to_go_back = 5.0;   //time taken to move away after print
@@ -251,12 +251,16 @@ int main(int argc, char** argv) {
             std::vector<double> target_pose = { starting_point[0],starting_point[1],starting_point[2],Original_gcode_array[0][6],Original_gcode_array[0][7],0.0};
             Gcode_array_of_segment = obj.Go_to_cartesian_pose( target_pose, 10.0);
             planned_path = obj.path_planner();
+            std::cout<< " status 1" <<std::endl;
             obj.print(planned_path,Gcode_array_of_segment);
+            planned_paths.push_back(planned_path);
+            planned_Gcodes.push_back(Gcode_array_of_segment);
             
 
 
             for (const auto& SEGMENT : segmentation_array){
                 //obj.get_current_joint_position();
+                std::cout<< " status 2" <<std::endl;
                 obj.update_starting_joint_pose(planned_path);
                 
                 obj.set_start_and_stop(SEGMENT);
@@ -269,13 +273,14 @@ int main(int argc, char** argv) {
                 //obj.print(planned_path,Gcode_array_of_segment);
         
             }
+            std::cout<< " status 4" <<std::endl;
             //to send the printing status to the data logging function
             print_stat_msg.data= "printing";
     
-            for (size_t i = 0; i < planned_paths.size(); ++i){
+            for (size_t i = 1; i < planned_paths.size(); ++i){
                 if (!planned_paths[i].points.empty()) {
                     std::cout<< i<<std::endl;
-                    obj.print(planned_paths[i],planned_Gcodes[i]);
+                    obj.print(planned_paths[i],planned_Gcodes[0]);
             
                 }
             }
@@ -288,12 +293,14 @@ int main(int argc, char** argv) {
                 delete[] Original_gcode_array[i] ;
             }
             delete[] Original_gcode_array;
-            
+            //std::cout<<"end of loop " <<std::endl;
             }
-      
-        
-        sleep(1);
+         
+        else{        
+            sleep(0.01);
+            //std::cout<<"waiting____ " <<std::endl;
         }
+    }
     
    
       
@@ -304,6 +311,7 @@ int main(int argc, char** argv) {
     ROS_INFO("Optimiaztion is completed for the Gcode!");
     return 0;
 }
+
 
 
 

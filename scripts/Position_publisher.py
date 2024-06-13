@@ -15,12 +15,16 @@ a = PoseStamped()
 group_name = "xarm7"
 joint_state_topic = ['joint_states:=/robot/joint_states']
 moveit_commander.roscpp_initialize(joint_state_topic)
-sawyer_group = moveit_commander.MoveGroupCommander(group_name)
+move_group = moveit_commander.MoveGroupCommander(group_name)
+
 
 while not rospy.is_shutdown():
-    current_pose = sawyer_group.get_current_pose()
+    current_pose = move_group.get_current_pose()
+    # Get the current joint values
+    current_joint_values = move_group.get_current_joint_values()
     #print("current pose : ",current_pose)
     a = copy.deepcopy(current_pose)
-    #print ("a : ", a)
+    print ("pose : ", a)
+    print ("joint values : ", current_joint_values)
     pub.publish(a)
     rate.sleep

@@ -8,7 +8,7 @@ points = []
 #reading the path from the file
 file = open('../xarm_ws/src/raven/scripts/to_convert.txt', 'r')
 [speed,X_val,Y_val,Z_val,E_val] = [0,0,0,0,0]
-Converted_file = open("../xarm_ws/src/raven/scripts/to_convert.txt", "w")
+Converted_file = open("../xarm_ws/src/raven/scripts/Converted_file.txt", "w")
 Converted_file.write("#G(0/1) F(m/min)    X(m)      Y(m)      Z(m)       E(mm)       Rx        Ry       Rz    seg#\n")
 
 
@@ -124,7 +124,8 @@ if check_relative_cooordinate () !=1:
                 	+str(s)+"\n"
                 )
                 #converting the values to metres and storing insid the set named points
-                Converted_file.write(formatted_line)
+                if (X_num > 0 or Y_num > 0 or Z_num>0):
+                     Converted_file.write(formatted_line)
                 #Converted_file.write(str(g)+" "+str(round(float(speed)/1000,8))+" "+str(round((float(X_val)/1000),8))+" "+str(round((float(Y_val)/1000),8))+" "+str(round((float(Z_val)/1000),8))+" "+str(round(float(E_val)*0.8,8))+" "+str(Rx) +" "+str(Ry) +" "+str(Rz)+ " "+str(s)+"\n")
                 #print (speed,X_val,Y_val,Z_val,E_val)
             else:

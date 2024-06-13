@@ -1,27 +1,32 @@
-~bin/bash -c "target_term -set 6 &&
+/bin/bash -c "target_term -set 7 &&
 target_term -run 1 cd ~/xarm_ws/ &&
 target_term -run 1 source devel/setup.bash &&
 target_term -run 1 roslaunch xarm_gazebo xarm7_beside_table.launch &&
 sleep 10s  &&
 target_term -run 2 cd ~/xarm_ws/ &&
 target_term -run 2 source devel/setup.bash &&
-target_term -run 2 roslaunch xarm7_moveit_config xarm7_moveit_gazebo.launch  &&
+target_term -run 2 roslaunch xarm7_moveit_config my_connect.launch  &&
 sleep 5s  &&
 target_term -run 3 cd ~/xarm_ws/ &&
 target_term -run 3 source devel/setup.bash &&
-target_term -run 3 rosrun topic_tools relay /xarm/joint_states robot/joint_states &&
-sleep 1s  &&
+sleep 10s &&
+target_term -run 3 rosrun raven Position_publisher.py &&
 target_term -run 4 cd ~/xarm_ws/ &&
 target_term -run 4 source devel/setup.bash &&
-target_term -run 4 rosparam set ikfast_base_frame link_base &&
-sleep 1s &&
-target_term -run 4 rosparam set ikfast_tool_frame link7 &&
-target_term -run 4 rosrun raven Position_publisher.py &&
-sleep 1s &&
+target_term -run 4 rosrun topic_tools relay /xarm/joint_states robot/joint_states &&
+sleep 5s  &&
 target_term -run 5 cd ~/xarm_ws/ &&
 target_term -run 5 source devel/setup.bash &&
+target_term -run 5 rosparam set ikfast_base_frame world &&
+target_term -run 5 rosparam set ikfast_tool_frame extruder_tip &&
 target_term -run 5 rosrun raven Data_logger.py &&
-sleep 1s &&
+sleep 1s  &&
 target_term -run 6 cd ~/xarm_ws/ &&
 target_term -run 6 source devel/setup.bash &&
-target_term -run 6 roslaunch raven raven_launch_file.launch"
+sleep 1s  &&
+target_term -run 6 roslaunch raven raven_launch_file.launch
+sleep 15s  &&
+target_term -run 7 cd ~/xarm_ws/ &&
+target_term -run 7 source devel/setup.bash &&
+sleep 1s  &&
+target_term -run 7 rosrun raven path_visualizer.py"

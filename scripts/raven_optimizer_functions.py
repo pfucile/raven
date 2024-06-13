@@ -677,11 +677,17 @@ def print_stat_callback(data):
                 
 # Function to publish the optimization_status asynchronously
 def publish_message():
-    global message, optimization_status
+    message = String()
+    # the publisher used to triger RAVEN printing 
+    optimization_stat_pub = rospy.Publisher('/optimization_node', String, queue_size=10)
+    global optimization_status
     while not rospy.is_shutdown():
-        message.data = optimization_status
-        optimization_stat_pub.publish(message)
-        rospy.sleep(0.1)  # Adjust the sleep duration as needed 
+        try:
+            message.data = optimization_status
+            optimization_stat_pub.publish(message)
+            rospy.sleep(0.1)  # Adjust the sleep duration as needed
+        except Exception as e:
+            rospy.logerr("Error in publish_message: {}".format(e))
       
     
 # Define your class
@@ -696,7 +702,7 @@ class SegmentOptimizer:
         #to write the Gcode to the temporary file so that it can be printed to and optimized
         # to set optimization_status to "completed"
         optimization_status = "calculating" 
-        self.segemnt_array = update_velocity_for_segment(self.segemnt_array,0.2)
+        #self.segemnt_array = update_velocity_for_segment(self.segemnt_array,0.2)
         write_gcode(self.segemnt_array,temporary_file)
         print("iteration number : ", 1 )
         
@@ -710,12 +716,12 @@ class SegmentOptimizer:
              if (time.time()- error_control_time > 60):
                  optimization_status = "error! -halting"
                  break
-        if (print_status == "printing" and datalogger_status == "logging data"):
+        if (print_status == "printing" and datalogger_status == "logging data"and optimization_status != "error! -halting"):
             optimization_status = "printing and logging"
         
-        while (print_status != "print completed"):
+        while (print_status != "print completed"and optimization_status != "error! -halting"):
             time.sleep(1)
-        if (print_status == "print completed"):
+        if (print_status == "print completed"and optimization_status != "error! -halting"):
             error_control_time = time.time()
             optimization_status = "printing done and waiting for logging to finish"
             while  (datalogger_status != "done logging data"):
@@ -724,8 +730,7 @@ class SegmentOptimizer:
                     optimization_status = "error! -halting"
             if (datalogger_status == "done logging data"):
                 optimization_status = "printing and logging done, now calculating"
-            
-                   
+                    
                 
         goal_array_0, recorded_array_0,correction_array_0, recorded_array_shifted_0, error_arr, start_point= interation_one(temporary_file,n)
         updated_segment_gcode = update_segment_gcode(self.segemnt_array, correction_array_0,start_point)
@@ -742,32 +747,32 @@ class SegmentOptimizer:
             n = n-1
             print("iteration number : ", i +2 )
             
+            if (optimization_status == "error! -halting" ):
+                break  
             
             # to set optimization_status to  "ready to print" 
-            optimization_status = "ready to print"         
-        
+            optimization_status = "ready to print" 
             error_control_time = time.time()
             while (print_status != "printing" or datalogger_status != "logging data"):
-                 time.sleep(1)    
+                 time.sleep(1) 
                  if (time.time()- error_control_time > 60):
                      optimization_status = "error! -halting"
                      break
-            if (print_status == "printing" and datalogger_status == "logging data"):
+            if (print_status == "printing" and datalogger_status == "logging data" and optimization_status != "error! -halting"):
                 optimization_status = "printing and logging"
         
-            while (print_status != "print completed"):
+            while (print_status != "print completed" and optimization_status != "error! -halting"):
                 time.sleep(1)
-            if (print_status == "print completed"):
+            if (print_status == "print completed"and optimization_status != "error! -halting"):
                 error_control_time = time.time()
                 optimization_status = "printing done and waiting for logging to finish"
                 while  (datalogger_status != "done logging data"):
-                    time.sleep(0.5)    
+                    time.sleep(0.5)   
                     if (time.time()- error_control_time > 15):
                         optimization_status = "error! -halting"
                 if (datalogger_status == "done logging data"):
                     optimization_status = "printing and logging done, now calculating"
-                    
-                    
+                       
             goal_array,recorded_array,correction_array,recorded_array_shifted,error_arr, start_point = interation(i+1,temporary_file,goal_array_0,n)
             updated_segment_gcode = update_segment_gcode(updated_segment_gcode, correction_array,start_point)
             write_gcode(updated_segment_gcode,temporary_file)
@@ -790,5 +795,6 @@ class SegmentOptimizer:
         print("done optimizing segment")
         #print_stat_sub.unregister()
         return updated_segment_gcode
+
 
 

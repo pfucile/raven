@@ -587,3 +587,4 @@ plot_progress_graph(goal_array_0,set_of_recorded_array,set_of_correction_array,s
 plot_resultant_error(goal_array_0,set_of_recorded_array,set_of_correction_array,set_of_error_array)
 log_error_as_file(set_of_error_array,original_traj_file_for_later,set_of_log_files)
 print("done")
+

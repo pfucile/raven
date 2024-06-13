@@ -23,7 +23,7 @@ def select_file(directory):
     root.destroy()
     return file_path
 
-selected_file = select_file("../Documents/")
+selected_file = select_file("../Documents/Backup_robot_workstation/Experiments/Log_data/Direct_log/")
 
 def actual_path_processing(args):
     line, first_line_found, time_zero, TBP_total = args
@@ -85,8 +85,8 @@ y_new = np.interp(recorded_array[:,3], goal_array[:,3], goal_array[:,1])
 z_new = np.interp(recorded_array[:,3], goal_array[:,3], goal_array[:,2])
 #to shift the recorded array in time axis such that the ideal graph and the actual graph is more aligned
 region_of_intrest_start =350
-region_of_intrest_end = 1500
-sweep = 300
+region_of_intrest_end = 800
+sweep = 100
 region_of_intrest = recorded_array[region_of_intrest_start:region_of_intrest_end]
 
 shift_error_array = []
@@ -146,32 +146,48 @@ for i in range(0,np.size(recorded_array_shifted,0),1):
 
 
 fig = plt.figure()
-ax = Axes3D(fig)
+ax = fig.add_subplot(111, projection='3d')
 #this section helps find the centre of the dat and keeps the plot centred and make sure all the axis are in the same scale
 plot_len  = max(np.ptp(recorded_array[:,0],axis = 0), np.ptp(recorded_array[:,1],axis = 0), np.ptp(recorded_array[:,2],axis = 0))
 ax.set_xlim3d(np.min(recorded_array[:,0])-((plot_len-np.ptp(recorded_array[:,0],axis = 0))/2)-0.001,np.max(recorded_array[:,0])+((plot_len-np.ptp(recorded_array[:,0],axis = 0))/2)+0.001)
 ax.set_ylim3d(np.min(recorded_array[:,1])-((plot_len-np.ptp(recorded_array[:,1],axis = 0))/2)-0.001,np.max(recorded_array[:,1])+((plot_len-np.ptp(recorded_array[:,1],axis = 0))/2)+0.001)
 ax.set_zlim3d(np.min(recorded_array[:,2])-((plot_len-np.ptp(recorded_array[:,2],axis = 0))/2)-0.001,np.max(recorded_array[:,2])+((plot_len-np.ptp(recorded_array[:,2],axis = 0))/2)+0.001)
-ax.xaxis.labelpad=30
+# Set label padding and properties for x-axis
+ax.xaxis.labelpad = 30
 ax.set_xlabel('$X (m)$', fontsize=30)
-ax.xaxis._axinfo['label']
-ax.yaxis.labelpad=30
-ax.set_ylabel('$Y (m)$',fontsize=30)
-ax.yaxis._axinfo['label']
-ax.zaxis.labelpad=35
-ax.set_zlabel('$Z (m)$',fontsize=30)
-ax.zaxis._axinfo['label']
-for t in ax.xaxis.get_major_ticks(): t.label.set_fontsize(20)
-ax.xaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-for t in ax.yaxis.get_major_ticks(): t.label.set_fontsize(20)
-ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-for t in ax.zaxis.get_major_ticks(): t.label.set_fontsize(20)
-for t in ax.zaxis.get_major_ticks(): t.label.set_horizontalalignment( 'left')
-ax.zaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}')) # 2 decimal places
-ax.plot3D(recorded_array[:,0], recorded_array[:,1], recorded_array[:,2], color='red', label='Actual path')
-ax.plot3D(goal_array[:,0], goal_array[:,1], goal_array[:,2], color='grey', label='Ideal path')
-ax.plot3D(goal_array[:,0], goal_array[:,1], goal_array[:,2], 'o', color='grey')
-#plt.legend()
+
+# Set label padding and properties for y-axis
+ax.yaxis.labelpad = 30
+ax.set_ylabel('$Y (m)$', fontsize=30)
+
+# Set label padding and properties for z-axis
+ax.zaxis.labelpad = 35
+ax.set_zlabel('$Z (m)$', fontsize=30)
+
+# Adjust font size for tick labels on all axes
+for tick in ax.xaxis.get_major_ticks():
+    tick.label1.set_fontsize(20)  # Use label1 instead of deprecated label function
+    tick.label1.set_horizontalalignment('left')  # Align tick labels to the left
+for tick in ax.yaxis.get_major_ticks():
+    tick.label1.set_fontsize(20)  # Use label1 instead of deprecated label function
+for tick in ax.zaxis.get_major_ticks():
+    tick.label1.set_fontsize(20)  # Use label1 instead of deprecated label function
+    tick.label1.set_horizontalalignment('left')  # Align tick labels to the left
+
+# Set major tick label formatting for all axes to display 3 decimal places
+from matplotlib.ticker import StrMethodFormatter
+ax.xaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}'))
+ax.yaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}'))
+ax.zaxis.set_major_formatter(StrMethodFormatter('{x:,.3f}'))
+
+# Plot the data with labels
+ax.plot3D(recorded_array[:, 0], recorded_array[:, 1], recorded_array[:, 2], color='red', label='Actual path')
+ax.plot3D(goal_array[:, 0], goal_array[:, 1], goal_array[:, 2], color='grey', label='Ideal path')
+
+# Show legend with specified labels
+plt.legend()
+
+# Show plot
 plt.title('Plot of the motion of the robot')
 plt.show()
 

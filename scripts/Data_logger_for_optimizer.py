@@ -37,10 +37,10 @@ logged_goal_data= False
 message_displayed = False
 
 joint_state_topic = ['joint_states:=/robot/joint_states']
-group_name = "right_arm"
+group_name = "xarm7"
 moveit_commander.roscpp_initialize(joint_state_topic)
 sawyer_group = moveit_commander.MoveGroupCommander(group_name)
-log_file_path =  "../new_sawyer_ws/src/raven/scripts/temp_log_file.txt" # set the folder for saving the log file
+log_file_path =  "../xarm_ws/src/raven/scripts/temp_log_file.txt" # set the folder for saving the log file
 time_now = 0
 print_time  = 0
 start_time = 0
@@ -186,6 +186,7 @@ def main():
                         print("Done logging data")
                         datalogger_status= "done logging data"
                         #to send the waiting message to the print state topic
+
                         
             elif  optimizer_status == "error! - halting":
                 if datalogger_status == "logging data":

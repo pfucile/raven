@@ -60,3 +60,4 @@ print("optmization of Gcode completed")
 print("writing optimized gcode")
 write_gcode(Optimized_Gcode,optimized_Gcode)
 print("Process completed")
+
