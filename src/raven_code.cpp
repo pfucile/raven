@@ -217,7 +217,7 @@ int main(int argc, char** argv) {
     print_stat_msg.data= "print completed";
     print_stat.publish(print_stat_msg);
     
-    
+    //planning using a set of joint poses
     std::vector<std::vector<double>>  target_joint_path;
     std::vector<double> joint_waypoint = { -0.9784105766138076, 1.8377449201679, 1.9943257850369331, 1.3522091207022067, -1.7596933219350026, 1.9879616473491204, 0.749910564198558};
     target_joint_path.push_back(joint_waypoint);
