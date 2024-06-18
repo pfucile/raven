@@ -358,6 +358,32 @@
         return GcodeArray;
     }
     
+    
+    //function to move the robot along a path were each waypoint is defined as joint configuration
+    //the path can should be passed as an array of joint configurations and the speed has to be passes in m/seconds
+    std::vector<std::vector<float>> segment_wise_printer_class::Follow_joint_pose_path_with_descartes(std::vector<std::vector<double>>  joint_path, float speed){
+        GcodeArray.clear();
+        result.clear();
+        std::vector<double> current_pose_in_loop = {current_pose.pose.position.x,current_pose.pose.position.y,current_pose.pose.position.z};
+        result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(joint_pose)));
+        for (size_t i = 0; i < joint_path.size(); ++i) {
+    		const std::vector<double>& target_joint_pose = joint_path[i];
+    		std::cout<<"working -- 1 " <<std::endl;
+		std::vector<double> next_pose_in_loop = segment_wise_printer_class::find_pose_forward_kinematics(target_joint_pose);
+		float  distance_x = next_pose_in_loop[0] - current_pose_in_loop[0];
+		float  distance_y = next_pose_in_loop[1] - current_pose_in_loop[1];
+		float  distance_z = next_pose_in_loop[2] - current_pose_in_loop[2];
+		float total_distance = sqrt(pow(distance_x,2)+pow(distance_y,2)+pow(distance_z,2));
+		float tbp = total_distance/speed;
+		current_pose_in_loop = next_pose_in_loop;
+		//to add the current pose into the trajectory
+		
+		result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(target_joint_pose,descartes_core::TimingConstraint(tbp)) ));
+		}
+        return GcodeArray;
+    }
+    
+    
     //function to move the robot to a particular pose //give the pose in the format {x,y,z,Rx,Ry,Rz}
     std::vector<std::vector<float>> segment_wise_printer_class::Go_to_cartesian_pose(std::vector<double> target_pose, double time_in_seconds){
         GcodeArray.clear();
@@ -497,8 +523,6 @@ std::vector<descartes_core::TrajectoryPtPtr> go_to_point(std::vector<double> poi
 
 
 
-//fuction to move the robot driectly using Moveit commander
-//since motions using this function does not use Descartes and the Ik_fast Ik solver it can be used to test if descates is working as intented
 
 
 
@@ -525,6 +549,9 @@ int publishGoal(float Rx,float Ry,float Rz,float TBP,float Px,float Py,float Pz 
     std::cout<< "planned_point: x  = "<< Px << " , y = "<<Py<< " , z = "<<Pz<<std::endl;
     return 0;
 }
+
+//fuction to move the robot driectly using Moveit commander
+//since motions using this function does not use Descartes and the Ik_fast Ik solver it can be used to test if descates is working as intented
 
 bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,double Rz){
     ros::NodeHandle node_handle;
