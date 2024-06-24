@@ -229,7 +229,13 @@ int main(int argc, char** argv) {
     
     joint_waypoint = {0.5017351761606346, 0.584374933649678, -0.10941778370860522, 1.537960367229827, 0.08729535035757685, 0.915705978667293, 0.40993373377652365};
     target_joint_path.push_back(joint_waypoint);
-    
+    bool move_statues = Move_to_pose_with_moveit(0.35,0.25,0.10,3.14,0.0,0.0);
+    // Environment variables (table and objects in environment )
+    if (!include_collision_objects_to_env(0.30,0.0,0.05,1,0.05,0.05,0.75,"Collision_object_1 ")) {
+        ROS_INFO_NAMED("error","Could not add objects to moveit!");
+        return -2;
+    }
+    move_statues = Move_to_pose_with_moveit(0.35,-0.25,0.10,3.14,0.0,0.0);
     
     Gcode_array_of_segment = obj.Follow_joint_pose_path_with_descartes(target_joint_path, 0.01);
     planned_path = obj.path_planner();

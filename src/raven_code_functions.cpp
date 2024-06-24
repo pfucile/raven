@@ -638,10 +638,6 @@ bool display_planned_path(trajectory_msgs::JointTrajectory& joint_solution_to_pr
 
 
 
-
-
-
-
 // function used to calculate the number of points on the gcode file given
 // this is important for the proper functioning of this package
 // the function return the number of lines on the file, which would then be used to
@@ -952,9 +948,6 @@ bool attach_collision_objects(float Position_x,float Position_y,float Position_z
 
 
 
-
-
-
 //the function to add tables or other objects to the environment
 // the function takes the position, orientation w and dimension of the object as the argument along with the name of the object
 bool include_collision_objects_to_env(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name )
@@ -966,7 +959,7 @@ bool include_collision_objects_to_env(float Position_x,float Position_y,float Po
 
     moveit_msgs::CollisionObject table;
     table.header.frame_id = move_group_interface.getPlanningFrame();
-    table.id = "name";
+    table.id = name;
 
     shape_msgs::SolidPrimitive table_shape;
     table_shape.type = table_shape.BOX;
@@ -994,7 +987,6 @@ bool include_collision_objects_to_env(float Position_x,float Position_y,float Po
     planning_scene_interface.addCollisionObjects(collision_objects);
     return true;
 }
-
 
 
 
