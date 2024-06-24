@@ -162,6 +162,7 @@ bool executeTrajectory(const trajectory_msgs::JointTrajectory& trajectory, std::
 bool attach_collision_objects(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name,std::string Frame );
 bool include_collision_objects_to_env(float Position_x,float Position_y,float Position_z,float Orientation_w,float Dimension_x,float Dimension_y,float Dimension_z,std::string name );
 std::vector<std::vector<int>> find_segments(float** myArray);
+bool Move_to_pose_with_moveit_cartesian(double X,double Y,double Z,double Rx,double Ry,double Rz);
 bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,double Rz);
 bool display_planned_path(trajectory_msgs::JointTrajectory& joint_solution_to_print);
 

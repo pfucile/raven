@@ -553,7 +553,7 @@ int publishGoal(float Rx,float Ry,float Rz,float TBP,float Px,float Py,float Pz 
 //fuction to move the robot driectly using Moveit commander
 //since motions using this function does not use Descartes and the Ik_fast Ik solver it can be used to test if descates is working as intented
 
-bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,double Rz){
+bool Move_to_pose_with_moveit_cartesian(double X,double Y,double Z,double Rx,double Ry,double Rz){
     ros::NodeHandle node_handle;
     ros::Publisher display_publisher = node_handle.advertise<moveit_msgs::DisplayTrajectory>("/move_group/display_planned_path", 1, true);
     moveit::planning_interface::MoveGroupInterface group(PLANNING_GROUP);
@@ -578,7 +578,7 @@ bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,dou
     
     moveit_msgs::RobotTrajectory trajectory;
     double fraction = group.computeCartesianPath(waypoints,0.01,  // eef_step
-                                                 0.0,   // jump_threshold
+                                                 100.0,   // jump_threshold
                                                  trajectory);
   
     ROS_INFO("Visualizing cartesian path (%.2f%% acheived)",
@@ -589,9 +589,9 @@ bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,dou
     display_trajectory.trajectory.push_back(trajectory);
     display_publisher.publish(display_trajectory);
     
-    ROS_INFO("motion will be executed in 25 seconds");    
+    ROS_INFO("motion will be executed in 15 seconds");
     /* Sleep to give Rviz time to visualize the plan. */
-    sleep(25.0);
+    sleep(15.0);
     bool success = false;
     if (fraction > 0.3)
     {
@@ -611,6 +611,51 @@ bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,dou
     return success;
     
 }
+
+//this function can be used to move to a pose using OMPL as the planner
+//it would use the default planner set in moveit usually OMPL unless changed explicitly
+bool Move_to_pose_with_moveit(double X,double Y,double Z,double Rx,double Ry,double Rz){
+    ros::NodeHandle node_handle;
+    ros::Publisher display_publisher = node_handle.advertise<moveit_msgs::DisplayTrajectory>("/move_group/display_planned_path", 1, true);
+    moveit::planning_interface::MoveGroupInterface group(PLANNING_GROUP);
+    moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+
+    tf2::Quaternion myQuaternion;
+    myQuaternion.setRPY(Rx,Ry,Rz);
+    myQuaternion=myQuaternion.normalize();
+    std::vector<geometry_msgs::Pose> waypoints;
+
+    geometry_msgs::Pose target_pose1;
+    target_pose1.orientation.x = myQuaternion.x();
+    target_pose1.orientation.y = myQuaternion.y();
+    target_pose1.orientation.z = myQuaternion.z();
+    target_pose1.orientation.w = myQuaternion.w();
+    target_pose1.position.x = X;
+    target_pose1.position.y = Y;
+    target_pose1.position.z = Z;
+
+    group.setPoseTarget(target_pose1);
+
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    bool success = (group.plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
+    ROS_INFO_NAMED("tutorial", "Visualizing plan 1 (pose goal) %s", success ? "" : "FAILED");
+    moveit_msgs::DisplayTrajectory display_trajectory;
+    moveit::core::RobotStatePtr current_state = group.getCurrentState();
+    moveit::core::robotStateToRobotStateMsg(*current_state, display_trajectory.trajectory_start); // Convert RobotStatePtr to RobotStateMsg
+    display_trajectory.trajectory.push_back(my_plan.trajectory_);
+    display_publisher.publish(display_trajectory);
+
+    ROS_INFO("motion will be executed in 15 seconds");
+    /* Sleep to give Rviz time to visualize the plan. */
+    sleep(15.0);
+
+
+    group.execute(my_plan);
+
+    return success;
+
+}
+
 
 
 //this is the function to display a trajectory planned already in rviz

@@ -229,7 +229,7 @@ int main(int argc, char** argv) {
     
     joint_waypoint = {0.5017351761606346, 0.584374933649678, -0.10941778370860522, 1.537960367229827, 0.08729535035757685, 0.915705978667293, 0.40993373377652365};
     target_joint_path.push_back(joint_waypoint);
-    bool move_statues = Move_to_pose_with_moveit(0.55,0.25,0.10,3.14,0.0,0.0);
+    bool move_statues = Move_to_pose_with_moveit_cartesian(0.55,0.25,0.10,3.14,0.0,0.0);
 
     // Environment variables (table and objects in environment )
     if (!include_collision_objects_to_env(0.35,0.0,0.05,1,0.05,0.05,0.65,"Collision_object_1 ")) {
