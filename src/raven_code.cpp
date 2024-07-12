@@ -45,12 +45,12 @@
 
 //defining some values and printing parameterfloat
 float max_print_speed = 2.5; //m/min to be used if the print speed is too high
-float print_temp = 190; //printing temperature
+float print_temp = 180; //printing temperature
 float nozzle_diameter = 0.4; //mm
 float layer_height = 0.4; //mm
 float extrusion_multiplier = 1.0; //mm
 float filament_diameter = 1.75; //mm
-float starting_point[] = {0.35, 0.0, 0.125}; //give the desired initial starting pose here!!
+float starting_point[] = {0.35, 0.0, 0.225}; //give the desired initial starting pose here!!
 float move_down_value = 0.072;  //adjust this number if the extruder is too close or too far from the print bed
 float time_mov_to_start = 20 ; //time taken to move from the waiting point to the first point on the segment
 float time_to_go_back = 5.0;   //time taken to move away after print
@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
         obj.update_starting_joint_pose(planned_path);
         
         obj.set_start_and_stop(SEGMENT);
-        Gcode_array_of_segment = obj.processSegment("straight" , "straight" , 0.072 );
+        Gcode_array_of_segment = obj.processSegment("straight" , "straight" , 0.07 );
         planned_path = obj.path_planner();
         planned_paths.push_back(planned_path);
         planned_Gcodes.push_back(Gcode_array_of_segment);
@@ -209,7 +209,7 @@ int main(int argc, char** argv) {
         if (!planned_paths[i].points.empty()) {
             std::cout<< i<<std::endl;
             int tester = testExtrusionCalculation(planned_Gcodes[i] );
-            //obj.print(planned_paths[i],planned_Gcodes[i]);
+            obj.print(planned_paths[i],planned_Gcodes[i]);
             
         }
     }
@@ -229,14 +229,14 @@ int main(int argc, char** argv) {
     
     joint_waypoint = {0.5017351761606346, 0.584374933649678, -0.10941778370860522, 1.537960367229827, 0.08729535035757685, 0.915705978667293, 0.40993373377652365};
     target_joint_path.push_back(joint_waypoint);
-    bool move_statues = Move_to_pose_with_moveit_cartesian(0.55,0.25,0.10,3.14,0.0,0.0);
+    //bool move_statues = Move_to_pose_with_moveit(0.55,0.25,0.10,2.14,0.0,0.0);
 
     // Environment variables (table and objects in environment )
-    if (!include_collision_objects_to_env(0.35,0.0,0.05,1,0.05,0.05,0.65,"Collision_object_1 ")) {
-        ROS_INFO_NAMED("error","Could not add objects to moveit!");
-        return -2;
-    }
-    move_statues = Move_to_pose_with_moveit(0.55,-0.25,0.10,3.14,0.0,0.0);
+    //if (!include_collision_objects_to_env(0.35,-0.1,0.175,1,0.06,0.003,0.35,"Collision_object_1 ")) {
+    //    ROS_INFO_NAMED("error","Could not add objects to moveit!");
+    //    return -2;
+    //}
+    //move_statues = Move_to_pose_with_moveit(0.55,-0.25,0.10,4.14,0.0,0.0);
     
     //Gcode_array_of_segment = obj.Follow_joint_pose_path_with_descartes(target_joint_path, 0.01);
     //planned_path = obj.path_planner();

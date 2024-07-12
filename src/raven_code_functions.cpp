@@ -934,7 +934,7 @@ descartes_core::TrajectoryPtPtr makeTolerancedCartesianPoint(const Eigen::Isomet
 {
     using namespace descartes_core;
     using namespace descartes_trajectory;
-    return TrajectoryPtPtr( new AxialSymmetricPt(pose, M_PI / 12.0, AxialSymmetricPt::Z_AXIS, TimingConstraint(dt)) );
+    return TrajectoryPtPtr( new AxialSymmetricPt(pose, M_PI / 2000, AxialSymmetricPt::Z_AXIS, TimingConstraint(dt)) );
 }
 
 //function to execute the trajectory on the robot. The function take the trajectory and the
