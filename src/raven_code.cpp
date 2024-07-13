@@ -221,33 +221,7 @@ int main(int argc, char** argv) {
     print_stat.publish(print_stat_msg);
 
     bool repeat_status = obj.Print_agin(planned_paths,planned_Gcodes,target_pose);
-    
-    //planning using a set of joint poses
-    std::vector<std::vector<double>>  target_joint_path;
-    std::vector<double> joint_waypoint = { -0.9784105766138076, 1.8377449201679, 1.9943257850369331, 1.3522091207022067, -1.7596933219350026, 1.9879616473491204, 0.749910564198558};
-    target_joint_path.push_back(joint_waypoint);
-    joint_waypoint = {-0.7029843248947705, 1.7982823461331492, 1.979879918377744, 1.4274622887336292, -1.7579417707133658, 1.9596781815169493, 0.9626252819227563};
-    target_joint_path.push_back(joint_waypoint);
-    
-    joint_waypoint = {-0.560797858188689, 0.9723575759077265, 1.2294876712493412, 1.4918084856553442, -0.9697143814081315, 1.209867399608176, 0.9253152911870401};
-    target_joint_path.push_back(joint_waypoint);
-    
-    joint_waypoint = {0.5017351761606346, 0.584374933649678, -0.10941778370860522, 1.537960367229827, 0.08729535035757685, 0.915705978667293, 0.40993373377652365};
-    target_joint_path.push_back(joint_waypoint);
-    //bool move_statues = Move_to_pose_with_moveit(0.55,0.25,0.10,2.14,0.0,0.0);
 
-    // Environment variables (table and objects in environment )
-    //if (!include_collision_objects_to_env(0.35,-0.1,0.175,1,0.06,0.003,0.35,"Collision_object_1 ")) {
-    //    ROS_INFO_NAMED("error","Could not add objects to moveit!");
-    //    return -2;
-    //}
-    //move_statues = Move_to_pose_with_moveit(0.55,-0.25,0.10,4.14,0.0,0.0);
-    
-    //Gcode_array_of_segment = obj.Follow_joint_pose_path_with_descartes(target_joint_path, 0.01);
-    //planned_path = obj.path_planner();
-    //obj.print(planned_path,Gcode_array_of_segment);
-    
- 
     
     sleep(1);
     //send the Gcode to switch off the heater of the extruder
