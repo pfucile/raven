@@ -404,7 +404,7 @@
 
         while (prompt == true) {
             char response;
-            std::cout << "Do you want to print the design again? (y/n): ";
+            std::cout << "Do you want to print the design again? (press y to print any other key to exit): ";
             std::cin >> response;
 
             response = std::tolower(response); // Convert to lowercase for simplicity
@@ -426,14 +426,10 @@
                         segment_wise_printer_class::print(planned_paths[i],planned_Gcodes[i]);
                     }
                 }
-
-
-            } else if (response == 'n') {
+            } else {
                 prompt = false;
                 std::cout << "You chose no! exiting the function" << std::endl;
                 break;
-            } else {
-                std::cout << "Invalid input, please enter 'y' or 'n'." << std::endl;
             }
         }
 
