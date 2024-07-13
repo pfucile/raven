@@ -391,7 +391,55 @@
         result = go_to_point(target_pose, time_in_seconds);
         return GcodeArray;
     }
-    
+
+
+    //function to print a planned Gcode repeatedly based on the user input from the prompt in the terminal
+    bool segment_wise_printer_class::Print_agin(std::vector<trajectory_msgs::JointTrajectory> planned_paths, std::vector<std::vector<std::vector<float>>> planned_Gcodes,std::vector<double> target_pose ){
+        //note that the target_pose is the Cartesian pose the robot goes to before the paths are planned in the planned_paths
+        bool prompt = true;
+        //doing the trajectory planning and storing the trajectory
+        std::vector<std::vector<float>>  Gcode_array_of_segment;
+        trajectory_msgs::JointTrajectory planned_path;
+
+
+        while (prompt == true) {
+            char response;
+            std::cout << "Do you want to print the design again? (y/n): ";
+            std::cin >> response;
+
+            response = std::tolower(response); // Convert to lowercase for simplicity
+
+            if (response == 'y') {
+                std::cout << "You chose yes!" << std::endl;
+                prompt = true;
+                std::cout << "starting the print now" << std::endl;
+                segment_wise_printer_class::update_starting_joint_pose(planned_paths.back());
+                Gcode_array_of_segment = segment_wise_printer_class::Go_to_cartesian_pose( target_pose, 10.0);
+                planned_path = segment_wise_printer_class::path_planner();
+                segment_wise_printer_class::print(planned_path,Gcode_array_of_segment);
+
+
+                for (size_t i = 0; i < planned_paths.size(); ++i){
+                    if (!planned_paths[i].points.empty()) {
+                        std::cout<< i<<std::endl;
+                        int tester = testExtrusionCalculation(planned_Gcodes[i] );
+                        segment_wise_printer_class::print(planned_paths[i],planned_Gcodes[i]);
+                    }
+                }
+
+
+            } else if (response == 'n') {
+                prompt = false;
+                std::cout << "You chose no! exiting the function" << std::endl;
+                break;
+            } else {
+                std::cout << "Invalid input, please enter 'y' or 'n'." << std::endl;
+            }
+        }
+
+        return true;
+
+    }
     
     trajectory_msgs::JointTrajectory segment_wise_printer_class::path_planner() {
         joint_solution.points.clear();

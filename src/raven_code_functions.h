@@ -133,9 +133,11 @@ public:
     std::vector<std::vector<float>> Go_to_cartesian_pose(std::vector<double> target_pose, double time_in_seconds);
     std::vector<double> find_pose_forward_kinematics(std::vector<double> joint_pose);
     std::vector<std::vector<float>> Follow_joint_pose_path_with_descartes(std::vector<std::vector<double>>  joint_path, float speed);
-    
+    bool Print_agin(std::vector<trajectory_msgs::JointTrajectory> planned_paths, std::vector<std::vector<std::vector<float>>> planned_Gcodes,std::vector<double> target_pose );
 
-};
+
+
+    };
 
 
 

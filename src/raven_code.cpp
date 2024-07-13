@@ -216,6 +216,11 @@ int main(int argc, char** argv) {
     //to send the printing status to the data logging function
     print_stat_msg.data= "print completed";
     print_stat.publish(print_stat_msg);
+
+    print_stat_msg.data= "giving the option to repeat the print";
+    print_stat.publish(print_stat_msg);
+
+    bool repeat_status = obj.Print_agin(planned_paths,planned_Gcodes,target_pose);
     
     //planning using a set of joint poses
     std::vector<std::vector<double>>  target_joint_path;
