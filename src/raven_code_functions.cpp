@@ -404,7 +404,7 @@
 
         while (prompt == true) {
             char response;
-            std::cout << "Do you want to print the design again? (press y to print any other key to exit): ";
+            std::cout << "Do you want to print the design again? (press y to print or any other key to exit): ";
             std::cin >> response;
 
             response = std::tolower(response); // Convert to lowercase for simplicity
