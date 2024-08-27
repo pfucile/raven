@@ -176,9 +176,11 @@
         result.push_back(descartes_core::TrajectoryPtPtr (new descartes_trajectory::JointTrajectoryPt(joint_pose) ));
         pose = Eigen::Isometry3d::Identity();
 
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.400f*time_to_start,0.0f), 0.0f, 0.400f*time_to_start });//preflow
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.599f*time_to_start,0.0f), 0.0f, 0.599f*time_to_start});// so that we have time to remove the filament
-        GcodeArray.push_back({calculate_F_for_E_and_time(0.001f*time_to_start,4.5f), 4.5f,0.001f*time_to_start}); //so that the first layer sticks to the bed
+        //GcodeArray.push_back({calculate_F_for_E_and_time(0.600f*time_to_start,6.5f), 6.5f, 0.600f*time_to_start });//preflow
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.600f*time_to_start,0.0f), 0.0f, 0.600f*time_to_start });//preflow
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.399f*time_to_start,2.0f), 2.0f, 0.399f*time_to_start});// so that we have time to remove the filament
+        //GcodeArray.push_back({calculate_F_for_E_and_time(0.001f*time_to_start,0.5f), 0.5f,0.001f*time_to_start}); //so that the first layer sticks to the bed
+        GcodeArray.push_back({calculate_F_for_E_and_time(0.001f*time_to_start,2.5f), 2.5f,0.001f*time_to_start}); //so that the first layer sticks to the bed
 	
         float  distance_x = current_pose.pose.position.x - (myArray[i - seq_element_num ][2]+ori_adj_x);
         float  distance_y = current_pose.pose.position.y - (myArray[i - seq_element_num ][3]+ori_adj_y);
@@ -500,20 +502,35 @@
             return joint_solution;
         }        
     }
+
+
+
     void segment_wise_printer_class::print(trajectory_msgs::JointTrajectory joint_solution_to_print ,std::vector<std::vector<float>> Gcode_array_of_segment){
-        std::cout<< " status 11" <<std::endl;
-        auto f = std::async(std::launch::async, sendGcode , std::ref(Gcode_array_of_segment));
-        std::cout<< " status 22" <<std::endl;
-        if (!executeTrajectory(joint_solution_to_print , follow_joint_trajectory_action)) {
-            ROS_ERROR("Could not execute trajectory!");
-            std::cout<< " status 101" <<std::endl;
-            }
-        std::cout<< " status 33" <<std::endl;
+        std::cout<< " starting the thread for Gcode sender" <<std::endl;
+        std::thread t1(sendGcode, std::ref(Gcode_array_of_segment));
+        std::cout<< "  starting the thread for trajectory sender" <<std::endl;
+        std::thread t2(executeTrajectory,std::ref(joint_solution_to_print),follow_joint_trajectory_action);
+    
+        // Allow threads to reach the wait condition
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        
+        
+        std::cout<< " waiting for follow_joint_trajectory_action to start " <<std::endl;
+        
+        std::cout<< " printing now" <<std::endl;
+    
+        // Start both threads simultaneously
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            ready = true;
+        }
+        cv.notify_all();
+
+        t1.join();
+        t2.join();
+        
         std::cout<< "printing of segment done"<<std::endl;
     }
-
-
-
 
 
 
@@ -858,6 +875,11 @@ std::vector<float>   Calculate_origin_adjustment(float move_down_value, float** 
 //the function sends the gcodes stored in the global GcodeArray based on the parameters specified in the array
 int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print )
 {
+    // Wait until the main thread signals to start
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, [] { return ready; });
+    lock.unlock();//the thread starts working again
+    
     if (!GcodeArray_to_print.empty()) {
 	    ser.write("G4 S1\r\n");
 	    // We are defining the typical command symbols and string elements of a gcode
@@ -978,7 +1000,7 @@ descartes_core::TrajectoryPtPtr makeTolerancedCartesianPoint(const Eigen::Isomet
 {
     using namespace descartes_core;
     using namespace descartes_trajectory;
-    return TrajectoryPtPtr( new AxialSymmetricPt(pose, M_PI / 2000, AxialSymmetricPt::Z_AXIS, TimingConstraint(dt)) );
+    return TrajectoryPtPtr( new AxialSymmetricPt(pose, M_PI / 1700, AxialSymmetricPt::Z_AXIS, TimingConstraint(dt)) );
 }
 
 //function to execute the trajectory on the robot. The function take the trajectory and the
@@ -990,11 +1012,16 @@ bool executeTrajectory(const trajectory_msgs::JointTrajectory& trajectory, std::
     if (!ac.waitForServer(ros::Duration(2.0)))
     {
         ROS_ERROR("Could not connect to action server");
-        return false;
+         return false;
     }
     control_msgs::FollowJointTrajectoryGoal goal;
     goal.trajectory = trajectory;
     goal.goal_time_tolerance = ros::Duration(1.0);
+    
+    // Wait until the main thread signals to start
+    std::unique_lock<std::mutex> lock(mtx);
+    cv.wait(lock, [] { return ready; });
+    lock.unlock();//the thread starts working again
     return ac.sendGoalAndWait(goal) == actionlib::SimpleClientGoalState::SUCCEEDED;
 }
 

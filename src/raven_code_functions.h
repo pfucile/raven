@@ -35,6 +35,9 @@
 #include <ctime>
 #include <future>
 #include <thread>
+#include <condition_variable>
+#include <mutex>
+
 #include <boost/thread.hpp>
 #include <unistd.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
@@ -73,7 +76,9 @@ extern descartes_planner::DensePlanner* planner;
 extern ros::Publisher goal_pub;
 extern ros::Publisher print_stat;
 extern ros::Publisher trajectory_pub;
-
+extern std::mutex mtx;
+extern std::condition_variable cv;
+extern bool ready;
 
 
 
@@ -146,7 +151,6 @@ public:
 std::vector<descartes_core::TrajectoryPtPtr> makePath();
 bool execute_gcode_sequence_by_sequence(float ori_adj_x, float ori_adj_y, float ori_adj_z);
 bool include_objects_to_env();
-bool executeTrajectory(const trajectory_msgs::JointTrajectory& trajectory);
 int sendGcode(std::vector<std::vector<float>>& GcodeArray_to_print );
 int testExtrusionCalculation(std::vector<std::vector<float>>& GcodeArray_to_print );
 float calculate_time_for_E_and_F(float E, float F );

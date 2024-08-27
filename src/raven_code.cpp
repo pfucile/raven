@@ -32,6 +32,9 @@
 #include <ctime>
 #include <future>
 #include <thread>
+#include <condition_variable>
+#include <mutex>
+
 #include <boost/thread.hpp>
 #include <unistd.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
@@ -45,15 +48,15 @@
 
 //defining some values and printing parameterfloat
 float max_print_speed = 2.5; //m/min to be used if the print speed is too high
-float print_temp = 180; //printing temperature
+float print_temp = 170; //printing temperature
 float nozzle_diameter = 0.4; //mm
 float layer_height = 0.4; //mm
 float extrusion_multiplier = 1.0; //mm
 float filament_diameter = 1.75; //mm
 float starting_point[] = {0.35, 0.0, 0.225}; //give the desired initial starting pose here!!
-float move_down_value = 0.072;  //adjust this number if the extruder is too close or too far from the print bed
+float move_down_value = 0.202;  //adjust this number if the extruder is too close or too far from the print bed
 float time_mov_to_start = 20 ; //time taken to move from the waiting point to the first point on the segment
-float time_to_go_back = 5.0;   //time taken to move away after print
+float time_to_go_back = 150.0;   //time taken to move away after print
 EigenSTL::vector_Isometry3d pattern_poses;
 double time_between_points = 0.15;
 
@@ -70,6 +73,10 @@ ros::Publisher goal_pub;
 ros::Publisher print_stat;
 ros::Publisher trajectory_pub ;
 
+
+std::mutex mtx;
+std::condition_variable cv;
+bool ready = false;
 
 
 //Initialization of different functions
