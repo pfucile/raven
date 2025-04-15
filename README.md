@@ -377,5 +377,8 @@ be pointing down into the ground, to make the robot point down the Rx value shou
   Please cite this work as:
 
   ```
-Fucile, P., David, V. C., Kalogeropoulou, M., Gloria, A., & Moroni, L. (2024). RAVEN: development of a novel robotic additive manufacturing system towards small-scale fabrication of complex scaffolds for regenerative medicine. Virtual and Physical Prototyping, 19(1). https://doi.org/10.1080/17452759.2024.2410412
+Fucile, P., David, V. C., Kalogeropoulou, M., Gloria, A., & Moroni, L. (2024).
+RAVEN: development of a novel robotic additive manufacturing system towards small-scale
+ fabrication of complex scaffolds for regenerative medicine. Virtual and Physical Prototyping, 19(1).
+https://doi.org/10.1080/17452759.2024.2410412
 ```
