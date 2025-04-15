@@ -14,6 +14,18 @@ This work is licensed under a
 [cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
 [cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
 
+
+## Citing
+
+  Please cite this work as:
+
+  ```
+Fucile, P., David, V. C., Kalogeropoulou, M., Gloria, A., & Moroni, L. (2024).
+RAVEN: development of a novel robotic additive manufacturing system towards small-scale
+ fabrication of complex scaffolds for regenerative medicine. Virtual and Physical Prototyping, 19(1).
+https://doi.org/10.1080/17452759.2024.2410412
+```
+
 ## Disclaimer
 ___This code has only been tested for a few robotic systems. The code is currently in an experimental state, feel free to use this code for your projects and to contribute back to this project. But exercise caution while running the codes on real robots especially while testing the system on your robot for the first time.___ 
 ## System requirements
@@ -384,13 +396,3 @@ be pointing down into the ground, to make the robot point down the Rx value shou
   * This process would repeat for 2 more times.
   * And finally few graphs with the optimization results would be generated. after closing them the final code would be generated.
 
-## Citing
-
-  Please cite this work as:
-
-  ```
-Fucile, P., David, V. C., Kalogeropoulou, M., Gloria, A., & Moroni, L. (2024).
-RAVEN: development of a novel robotic additive manufacturing system towards small-scale
- fabrication of complex scaffolds for regenerative medicine. Virtual and Physical Prototyping, 19(1).
-https://doi.org/10.1080/17452759.2024.2410412
-```
